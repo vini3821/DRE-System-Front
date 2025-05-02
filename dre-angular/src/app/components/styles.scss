@@ -1,0 +1,316 @@
+@import '~@angular/material/theming';
+
+// Importação das fontes arredondadas
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap');
+
+// Definindo uma tipografia mais arredondada e aconchegante
+$custom-typography: mat-typography-config($font-family: "'Quicksand', 'Nunito', sans-serif",
+        $headline: mat-typography-level(28px, 36px, 700),
+        $title: mat-typography-level(22px, 30px, 600),
+        $subheading-2: mat-typography-level(18px, 26px, 600),
+        $subheading-1: mat-typography-level(16px, 24px, 500),
+        $body-2: mat-typography-level(15px, 24px, 500),
+        $body-1: mat-typography-level(15px, 24px, 400),
+        $caption: mat-typography-level(13px, 18px, 400),
+        $button: mat-typography-level(15px, 15px, 600));
+
+@include mat-core($custom-typography);
+
+// Variáveis de cores suaves
+$primary-color: #5b6bbf;
+$primary-light: #8d97d8;
+$primary-dark: #3a4999;
+$accent-color: #4db6ac;
+$surface-color: #ffffff;
+$background-color: #f9faff;
+
+// Estilos globais aconchegantes
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Quicksand', 'Nunito', sans-serif;
+    color: #3a3f54;
+    overflow-x: hidden;
+}
+
+body {
+    background-color: #f9faff;
+    background-image: radial-gradient(circle at top right, rgba(#e8eaf6, 0.6), rgba(#e3f2fd, 0.2));
+    background-attachment: fixed;
+}
+
+// Scroll aconchegante e arredondado
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c5cae9;
+    border-radius: 20px;
+    border: 2px solid #f1f1f1;
+    transition: all 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9fa8da;
+}
+
+// Botões aconchegantes e arredondados
+.mat-raised-button,
+.mat-flat-button {
+    border-radius: 20px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-weight: 600 !important;
+    font-family: 'Quicksand', 'Nunito', sans-serif !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s !important;
+    overflow: hidden !important;
+    position: relative !important;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.2);
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+        border-radius: 50%;
+        transition: all 0.6s ease-out;
+    }
+
+    &:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12) !important;
+
+        &::after {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(2);
+        }
+    }
+
+    &:active::after {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+        transition: 0s;
+    }
+
+    .mat-icon {
+        margin-right: 8px;
+    }
+}
+
+// Campos de formulário aconchegantes
+.mat-form-field-appearance-outline {
+    .mat-form-field-outline {
+        border-radius: 20px;
+    }
+
+    .mat-form-field-infix {
+        padding: 0.9em 0;
+        font-family: 'Quicksand', 'Nunito', sans-serif;
+    }
+
+    .mat-form-field-label {
+        margin-top: -0.5em;
+        font-family: 'Quicksand', 'Nunito', sans-serif;
+    }
+
+    &.mat-focused {
+        .mat-form-field-outline-thick {
+            color: $primary-color;
+        }
+    }
+}
+
+.mat-form-field {
+    width: 100%;
+    margin-bottom: 22px;
+}
+
+// Efeitos em cards
+.mat-card {
+    border-radius: 24px !important;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    overflow: hidden !important;
+    border: none !important;
+
+    &:hover {
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08) !important;
+        transform: translateY(-6px) !important;
+    }
+}
+
+// Sombras aconchegantes
+.elevation-1 {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.elevation-2 {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.elevation-3 {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+// Animações para transições suaves
+.fade-in {
+    animation: fadeIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.slide-up {
+    animation: slideUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+// Melhorias nas tabelas com formas mais orgânicas
+.mat-table {
+    width: 100%;
+    background: transparent !important;
+    font-family: 'Quicksand', 'Nunito', sans-serif !important;
+}
+
+.mat-header-row {
+    background-color: rgba(#5b6bbf, 0.04);
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+}
+
+.mat-row {
+    transition: all 0.3s !important;
+    border-radius: 8px;
+    margin: 4px 0;
+
+    &:hover {
+        background-color: rgba(#5b6bbf, 0.04) !important;
+        transform: translateX(4px) scale(1.01) !important;
+    }
+
+    &:nth-child(even) {
+        background-color: rgba(#f5f7fa, 0.7);
+    }
+}
+
+// Tooltips arredondados
+.mat-tooltip {
+    background-color: rgba(#3a3f54, 0.9) !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    padding: 10px 14px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+    font-family: 'Quicksand', 'Nunito', sans-serif !important;
+    letter-spacing: 0.3px !important;
+}
+
+// Confirmações e alertas arredondados
+.mat-snack-bar-container {
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+    font-family: 'Quicksand', 'Nunito', sans-serif !important;
+}
+
+// Botão flutuante de ação arredondado
+.floating-action-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    border-radius: 50% !important;
+    width: 60px !important;
+    height: 60px !important;
+    box-shadow: 0 6px 20px rgba(#5b6bbf, 0.25) !important;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+
+    &:hover {
+        transform: translateY(-6px) scale(1.05) !important;
+        box-shadow: 0 12px 30px rgba(#5b6bbf, 0.35) !important;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, rgba(white, 0.2), transparent);
+        border-radius: 50%;
+        z-index: 0;
+    }
+}
+
+// Efeitos de ondulação mais suaves
+.mat-ripple-element {
+    background-color: rgba(#5b6bbf, 0.1) !important;
+}
+
+// Dialogs arredondados
+.mat-dialog-container {
+    border-radius: 24px !important;
+    padding: 28px !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
+
+    h1,
+    h2,
+    h3,
+    .mat-dialog-title {
+        font-family: 'Quicksand', 'Nunito', sans-serif !important;
+        font-weight: 600 !important;
+        color: #3a4999 !important;
+    }
+}
+
+// Letras mais suaves nos menus
+.mat-menu-panel {
+    border-radius: 20px !important;
+    overflow: hidden !important;
+
+    .mat-menu-content {
+        padding: 8px !important;
+    }
+
+    .mat-menu-item {
+        border-radius: 12px !important;
+        margin: 4px !important;
+        font-family: 'Quicksand', 'Nunito', sans-serif !important;
+
+        .mat-icon {
+            color: #5b6bbf !important;
+        }
+    }
+}
