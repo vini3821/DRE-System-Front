@@ -1,0 +1,222 @@
+// Importar variáveis globais
+$primary-color: #5b6bbf;
+$primary-light: #8d97d8;
+$primary-dark: #3a4999;
+$accent-color: #4db6ac;
+$surface-color: #ffffff;
+$background-color: #f9faff;
+$revenue-color: #66bb6a;
+$expense-color: #ef5350;
+$text-primary: #3a3f54;
+$text-secondary: #6e7a90;
+$border-color: #ebedf7;
+$shadow-light: 0 8px 25px rgba(0, 0, 0, 0.03);
+$shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.06);
+$shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
+
+// Mixin para cards
+@mixin card-base {
+    background-color: $surface-color;
+    border-radius: 24px;
+    box-shadow: $shadow-light;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+    border: none;
+
+    &:hover {
+        box-shadow: $shadow-hover;
+        transform: translateY(-6px);
+    }
+}
+
+.reports-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .filter-card {
+        @include card-base;
+        margin-bottom: 24px;
+
+        .mat-card-header {
+            background: linear-gradient(to right, rgba($primary-color, 0.06), rgba($primary-color, 0.01));
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba($border-color, 0.7);
+
+            .mat-card-title {
+                margin: 0;
+                font-size: 19px;
+                font-weight: 600;
+                font-family: 'Quicksand', 'Nunito', sans-serif;
+                color: $primary-color;
+                display: flex;
+                align-items: center;
+
+                &::before {
+                    content: '';
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    margin-right: 12px;
+                    background-color: $primary-color;
+                    border-radius: 50%;
+                }
+            }
+        }
+
+        .mat-card-content {
+            padding: 24px;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            align-items: center;
+
+            button {
+                height: 56px;
+                border-radius: 18px;
+                font-family: 'Quicksand', 'Nunito', sans-serif;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s;
+
+                &:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+                }
+
+                .mat-icon {
+                    margin-right: 8px;
+                }
+            }
+        }
+    }
+
+    .export-actions {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+        justify-content: flex-end;
+
+        button {
+            border-radius: 18px;
+            font-family: 'Quicksand', 'Nunito', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 20px;
+            height: 42px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+            }
+
+            .mat-icon {
+                margin-right: 8px;
+            }
+        }
+    }
+
+    .report-card {
+        @include card-base;
+
+        .mat-card-header {
+            background: linear-gradient(to right, rgba($primary-color, 0.06), rgba($primary-color, 0.01));
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba($border-color, 0.7);
+
+            .mat-card-title {
+                margin: 0;
+                font-size: 19px;
+                font-weight: 600;
+                font-family: 'Quicksand', 'Nunito', sans-serif;
+                color: $primary-color;
+                display: flex;
+                align-items: center;
+
+                &::before {
+                    content: '';
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    margin-right: 12px;
+                    background-color: $primary-color;
+                    border-radius: 50%;
+                }
+            }
+        }
+
+        .mat-card-content {
+            padding: 0;
+        }
+    }
+
+    .chart-container {
+        padding: 24px;
+        min-height: 300px;
+    }
+
+    .chart-placeholder {
+        height: 300px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        font-style: italic;
+        color: #777;
+        font-family: 'Quicksand', 'Nunito', sans-serif;
+    }
+
+    // Estilização para as abas
+    ::ng-deep .mat-tab-group {
+        .mat-tab-header {
+            border-bottom: none;
+
+            .mat-tab-label {
+                font-family: 'Quicksand', 'Nunito', sans-serif;
+                font-weight: 600;
+                opacity: 0.7;
+                height: 56px;
+
+                &.mat-tab-label-active {
+                    opacity: 1;
+                    color: $primary-color;
+                }
+            }
+
+            .mat-ink-bar {
+                background-color: $primary-color;
+                height: 3px;
+                border-radius: 3px;
+            }
+        }
+
+        .mat-tab-body-content {
+            padding-top: 16px;
+        }
+    }
+
+    // Responsividade
+    @media (max-width: 768px) {
+        .filter-form {
+            grid-template-columns: 1fr !important;
+        }
+
+        .export-actions {
+            flex-direction: column;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+}

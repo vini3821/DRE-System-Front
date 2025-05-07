@@ -1,12 +1,12 @@
 <div class="dashboard-container">
   <mat-toolbar color="primary" class="dashboard-toolbar">
     <button mat-icon-button (click)="sidenav.toggle()">
-      <mat-icon></mat-icon>
+      <mat-icon>menu</mat-icon>
     </button>
     <span>Sistema DRE</span>
     <span class="spacer"></span>
     <button mat-icon-button [matMenuTriggerFor]="userMenu">
-      <mat-icon></mat-icon>
+      <mat-icon>account_circle</mat-icon>
     </button>
     <mat-menu #userMenu="matMenu">
       <button mat-menu-item>
@@ -22,40 +22,56 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <mat-sidenav-container class="dashboard-sidenav-container">
     <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="dashboard-sidenav">
-      <mat-nav-list>
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
-          <mat-icon mat-list-icon></mat-icon>
-          <span>Dashboard</span>
+      <div class="custom-nav-list">
+        <a class="custom-nav-item" routerLink="/dashboard" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>dashboard</mat-icon>
+          </div>
+          <div class="label-container">Dashboard</div>
         </a>
-        <a mat-list-item routerLink="/entries" routerLinkActive="active">
-          <mat-icon mat-list-icon></mat-icon>
-          <span>Lançamentos</span>
+        <a class="custom-nav-item" routerLink="/entries" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>receipt</mat-icon>
+          </div>
+          <div class="label-container">Lançamentos</div>
         </a>
-        <a mat-list-item routerLink="/collaborators" routerLinkActive="active">
-          <mat-icon mat-list-icon></mat-icon>
-          <span>Colaboradores</span>
+        <a class="custom-nav-item" routerLink="/collaborators" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="label-container">Colaboradores</div>
         </a>
-        <a mat-list-item routerLink="/cost-centers" routerLinkActive="active">
-          <mat-icon mat-list-icon></mat-icon>
-          <span>Centros de Custo</span>
+        <a class="custom-nav-item" routerLink="/cost-centers" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>business</mat-icon>
+          </div>
+          <div class="label-container">Centros de Custo</div>
         </a>
-        <a mat-list-item routerLink="/regions" routerLinkActive="active">
-          <mat-icon mat-list-icon></mat-icon>
-          <span>Regiões</span>
+        <a class="custom-nav-item" routerLink="/regions" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>location_on</mat-icon>
+          </div>
+          <div class="label-container">Regiões</div>
         </a>
-        <a mat-list-item routerLink="/sectors" routerLinkActive="active">
-          <mat-icon mat-list-icon></mat-icon>
-          <span>Setores</span>
+        <a class="custom-nav-item" routerLink="/sectors" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>category</mat-icon>
+          </div>
+          <div class="label-container">Setores</div>
         </a>
-        <a mat-list-item routerLink="/banks" routerLinkActive="active">
-          <mat-icon mat-list-icon></mat-icon>
-          <span>Bancos</span>
+        <a class="custom-nav-item" routerLink="/banks" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>account_balance</mat-icon>
+          </div>
+          <div class="label-container">Bancos</div>
         </a>
-        <a mat-list-item routerLink="/reports" routerLinkActive="active">
-          <mat-icon mat-list-icon></mat-icon>
-          <span>Relatórios</span>
+        <a class="custom-nav-item" routerLink="/reports" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>bar_chart</mat-icon>
+          </div>
+          <div class="label-container">Relatórios</div>
         </a>
-      </mat-nav-list>
+      </div>
     </mat-sidenav>
 
     <mat-sidenav-content class="dashboard-content">
@@ -92,9 +108,16 @@
             </mat-card-header>
             <mat-card-content>
               <div style="height: 250px; width: 100%;">
-                <canvas baseChart [type]="doughnutChartType" [data]="doughnutChartData"
-                  [options]="doughnutChartOptions">
-                </canvas>
+                <!-- Renderize o canvas apenas no navegador -->
+                <ng-container *ngIf="isBrowser">
+                  <canvas baseChart [type]="doughnutChartType" [data]="doughnutChartData"
+                    [options]="doughnutChartOptions">
+                  </canvas>
+                </ng-container>
+                <!-- Fallback para o servidor -->
+                <div *ngIf="!isBrowser" class="chart-placeholder">
+                  Carregando gráfico...
+                </div>
               </div>
             </mat-card-content>
           </mat-card>
@@ -106,10 +129,10 @@
               <mat-card-title>Últimos Lançamentos</mat-card-title>
               <div class="header-actions">
                 <button mat-raised-button color="accent" (click)="addMockEntry()">
-                  <mat-icon></mat-icon> Adicionar Mock
+                  <mat-icon>add_circle</mat-icon> Adicionar Mock
                 </button>
                 <button mat-raised-button color="primary" routerLink="/entries/new">
-                  <mat-icon></mat-icon> Novo Lançamento
+                  <mat-icon>add</mat-icon> Novo Lançamento
                 </button>
               </div>
             </mat-card-header>
@@ -156,11 +179,11 @@
                   <td mat-cell *matCellDef="let entry">
                     <div class="action-buttons">
                       <button mat-icon-button class="edit-button" [routerLink]="['/entries', entry.entryID]"
-                        matTooltip="Editar lançamento">
+                        matTooltip="Editar lançamento" matRipple>
                         <mat-icon>edit</mat-icon>
                       </button>
                       <button mat-icon-button class="delete-button" (click)="confirmDelete(entry.entryID)"
-                        matTooltip="Excluir lançamento">
+                        matTooltip="Excluir lançamento" matRipple>
                         <mat-icon>delete</mat-icon>
                       </button>
                     </div>

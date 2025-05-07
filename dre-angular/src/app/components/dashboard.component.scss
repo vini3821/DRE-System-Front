@@ -1,13 +1,13 @@
 // Paleta de cores suaves e aconchegantes
-$primary-color: #5b6bbf;      // Azul mais suave
+$primary-color: #5b6bbf; // Azul mais suave
 $primary-light: #8d97d8;
 $primary-dark: #3a4999;
-$accent-color: #4db6ac;       // Verde-água mais suave
+$accent-color: #4db6ac; // Verde-água mais suave
 $surface-color: #ffffff;
-$background-color: #f9faff;   // Fundo mais claro e suave
-$revenue-color: #66bb6a;      // Verde mais vivo e amigável
-$expense-color: #ef5350;      // Vermelho mais suave
-$text-primary: #3a3f54;       // Texto mais suave para conforto visual
+$background-color: #f9faff; // Fundo mais claro e suave
+$revenue-color: #66bb6a; // Verde mais vivo e amigável
+$expense-color: #ef5350; // Vermelho mais suave
+$text-primary: #3a3f54; // Texto mais suave para conforto visual
 $text-secondary: #6e7a90;
 $border-color: #ebedf7;
 $shadow-light: 0 8px 25px rgba(0, 0, 0, 0.03);
@@ -17,12 +17,12 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
 // Mixins para reutilização
 @mixin card-base {
   background-color: $surface-color;
-  border-radius: 24px;  // Bordas mais arredondadas
+  border-radius: 24px; // Bordas mais arredondadas
   box-shadow: $shadow-light;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); // Transição mais natural
   overflow: hidden;
   border: none;
-  
+
   &:hover {
     box-shadow: $shadow-hover;
     transform: translateY(-6px);
@@ -35,7 +35,7 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
   justify-content: center;
 }
 
-// Estilos globais aconchegantes
+//Estilos globais aconchegantes
 .dashboard-container {
   height: 100%;
   background-color: $background-color;
@@ -43,7 +43,7 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
   background-attachment: fixed;
 }
 
-// Toolbar arredondada e aconchegante
+//Toolbar arredondada e aconchegante
 .dashboard-toolbar {
   background: linear-gradient(120deg, $primary-dark, $primary-color);
   box-shadow: $shadow-medium;
@@ -51,26 +51,26 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
   z-index: 10;
   height: 70px;
   padding: 0 28px;
-  border-radius: 0 0 24px 24px;  // Cantos inferiores arredondados
+  border-radius: 0 0 24px 24px; // Cantos inferiores arredondados
   margin: 0 12px 12px 12px;
-  
+
   span {
     font-weight: 600;
     letter-spacing: 0.5px;
     font-size: 22px;
     color: white;
-    font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+    font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
   }
-  
+
   .spacer {
     flex: 1 1 auto;
   }
-  
+
   button {
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.15);
       transform: scale(1.1);
@@ -81,59 +81,71 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
 // Sidenav mais arredondado e suave
 .dashboard-sidenav-container {
   height: calc(100% - 70px);
-  
+
   .dashboard-sidenav {
     width: 260px;
     background-color: rgba($surface-color, 0.97);
     border-right: none;
-    border-radius: 0 30px 30px 0;  // Borda arredondada à direita
+    border-radius: 0 30px 30px 0;
     margin-right: 12px;
-    
+
     .mat-nav-list {
       padding-top: 20px;
       
+
       a.mat-list-item {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
         border-radius: 0 30px 30px 0;
         margin: 8px 16px 8px 0;
         height: 56px;
         color: $text-secondary;
         transition: all 0.3s;
         font-weight: 500;
-        font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+        font-family: 'Quicksand', 'Nunito', sans-serif;
         letter-spacing: 0.3px;
         font-size: 15px;
+        padding: 0 16px;
         
+
         &.active {
           background-color: rgba($primary-color, 0.12);
           color: $primary-color;
           font-weight: 600;
-          padding-left: 8px;
-          
-          .mat-icon {
-            color: $primary-color;
-          }
         }
-        
+
         &:hover:not(.active) {
           background-color: rgba($text-secondary, 0.05);
           transform: translateX(4px);
         }
-        
+
         .mat-icon {
           margin-right: 16px;
           margin-left: 12px;
           color: rgba($text-secondary, 0.8);
           transition: color 0.3s;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        span {
+          display: inline-block;
+          vertical-align: middle;
+          margin-top: 0;
+          padding-top: 4px;
         }
       }
     }
   }
 }
 
+
+
 // Dashboard content suave
 .dashboard-content {
   padding: 32px;
-  
+
   .content-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -147,14 +159,14 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 28px;
   margin-bottom: 36px;
-  
+
   .mat-card {
     @include card-base;
     padding: 0;
     height: 150px;
     position: relative;
     overflow: hidden;
-    
+
     &::before {
       content: '';
       position: absolute;
@@ -165,7 +177,7 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
       background: linear-gradient(135deg, rgba($primary-light, 0.05), rgba(white, 0));
       z-index: 0;
     }
-    
+
     .mat-card-content {
       display: flex;
       flex-direction: column;
@@ -175,20 +187,20 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
       position: relative;
       z-index: 1;
     }
-    
+
     .stat-label {
       text-transform: uppercase;
       letter-spacing: 1px;
       font-size: 14px;
       font-weight: 600;
-      font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
       color: $text-secondary;
       margin-bottom: 22px;
       display: flex;
       align-items: center;
       position: relative;
       padding-left: 16px;
-      
+
       &::before {
         content: '';
         position: absolute;
@@ -199,22 +211,22 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
         border-radius: 50%;
       }
     }
-    
+
     .stat-value {
       font-size: 38px;
       font-weight: 700;
-      font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
       letter-spacing: -0.5px;
-      
+
       &.revenue {
         color: $revenue-color;
       }
-      
+
       &.expense {
         color: $expense-color;
       }
     }
-    
+
     // Círculos decorativos
     &::after {
       content: '';
@@ -231,26 +243,38 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
 }
 
 // Gráfico com cantos mais arredondados
+.chart-placeholder {
+  height: 250px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  font-style: italic;
+  color: #777;
+}
+
 .chart-container {
   margin-bottom: 36px;
-  
+
   .mat-card {
     @include card-base;
-    
+
     .mat-card-header {
       background: linear-gradient(to right, rgba($primary-color, 0.06), rgba($primary-color, 0.01));
       padding: 24px 28px;
       border-bottom: 1px solid rgba($border-color, 0.7);
-      
+
       .mat-card-title {
         margin: 0;
         font-size: 19px;
         font-weight: 600;
-        font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+        font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
         color: $primary-color;
         display: flex;
         align-items: center;
-        
+
         &::before {
           content: '';
           display: inline-block;
@@ -258,11 +282,11 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
           height: 10px;
           margin-right: 12px;
           background-color: $primary-color;
-          border-radius: 50%;  // Círculo em vez de quadrado
+          border-radius: 50%; // Círculo em vez de quadrado
         }
       }
     }
-    
+
     .mat-card-content {
       padding: 28px;
     }
@@ -273,23 +297,23 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
 .entries-list {
   .mat-card {
     @include card-base;
-    
+
     .mat-card-header {
       background: linear-gradient(to right, rgba($primary-color, 0.06), rgba($primary-color, 0.01));
       padding: 24px 28px;
       border-bottom: 1px solid rgba($border-color, 0.7);
       display: flex;
       align-items: center;
-      
+
       .mat-card-title {
         margin: 0;
         font-size: 19px;
         font-weight: 600;
-        font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+        font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
         color: $primary-color;
         display: flex;
         align-items: center;
-        
+
         &::before {
           content: '';
           display: inline-block;
@@ -297,124 +321,124 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
           height: 10px;
           margin-right: 12px;
           background-color: $primary-color;
-          border-radius: 50%;  // Círculo em vez de quadrado
+          border-radius: 50%; // Círculo em vez de quadrado
         }
       }
-      
+
       .header-actions {
         margin-left: auto;
         display: flex;
         gap: 14px;
-        
+
         button {
           text-transform: uppercase;
           letter-spacing: 0.5px;
-          font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+          font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
           font-weight: 600;
-          border-radius: 18px;  // Bordas mais arredondadas
+          border-radius: 18px; // Bordas mais arredondadas
           padding: 0 20px;
           height: 42px;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
           transition: all 0.3s;
-          
+
           &:first-child {
             background-color: $accent-color;
             color: white;
           }
-          
+
           &:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
           }
-          
+
           .mat-icon {
             margin-right: 8px;
           }
         }
       }
     }
-    
+
     .mat-card-content {
       padding: 0;
     }
   }
-  
+
   .entries-table {
     width: 100%;
-    
+
     th.mat-header-cell {
       background-color: rgba($primary-color, 0.04);
       color: $text-secondary;
       font-weight: 600;
-      font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
       text-transform: uppercase;
       font-size: 13px;
       letter-spacing: 0.5px;
       padding: 18px 22px;
       border-bottom: 2px solid rgba($primary-color, 0.08);
     }
-    
+
     td.mat-cell {
       padding: 18px 22px;
       color: $text-primary;
-      font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
       border-bottom: 1px solid rgba($border-color, 0.6);
       font-size: 15px;
-      
+
       &:first-of-type {
         font-weight: 500;
       }
     }
-    
+
     tr.mat-row {
       transition: all 0.3s;
-      
+
       &:hover {
         background-color: rgba($primary-color, 0.03);
-        transform: scale(1.01);  // Efeito sutil de escala ao passar o mouse
+        transform: scale(1.01); // Efeito sutil de escala ao passar o mouse
       }
     }
-    
+
     .entry-type {
       padding: 6px 16px;
-      border-radius: 30px;  // Bordas bem arredondadas
+      border-radius: 30px; // Bordas bem arredondadas
       font-size: 13px;
-      font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
       font-weight: 600;
       display: inline-block;
-      
+
       &.revenue-type {
         background-color: rgba($revenue-color, 0.12);
         color: $revenue-color;
       }
-      
+
       &.expense-type {
         background-color: rgba($expense-color, 0.12);
         color: $expense-color;
       }
     }
-    
+
     .revenue {
       color: $revenue-color;
       font-weight: 600;
     }
-    
+
     .expense {
       color: $expense-color;
       font-weight: 600;
     }
-    
+
     .action-buttons {
       display: flex;
       gap: 12px;
-      
+
       button {
         width: 38px;
         height: 38px;
-        border-radius: 50%;  // Botões circulares
+        border-radius: 50%; // Botões circulares
         @include flex-center;
         transition: all 0.3s;
-        
+
         .mat-icon {
           font-size: 20px;
           width: 20px;
@@ -422,76 +446,76 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
           line-height: 20px;
         }
       }
-      
+
       .edit-button {
         background-color: rgba($primary-color, 0.1);
         color: $primary-color;
-        
+
         &:hover {
           background-color: $primary-color;
           color: white;
-          transform: translateY(-3px) rotate(8deg);  // Efeito de rotação ao passar o mouse
+          transform: translateY(-3px) rotate(8deg); // Efeito de rotação ao passar o mouse
           box-shadow: 0 5px 15px rgba($primary-color, 0.25);
         }
       }
-      
+
       .delete-button {
         background-color: rgba($expense-color, 0.1);
         color: $expense-color;
-        
+
         &:hover {
           background-color: $expense-color;
           color: white;
-          transform: translateY(-3px) rotate(-8deg);  // Efeito de rotação ao passar o mouse
+          transform: translateY(-3px) rotate(-8deg); // Efeito de rotação ao passar o mouse
           box-shadow: 0 5px 15px rgba($expense-color, 0.25);
         }
       }
     }
   }
-  
+
   .no-data {
     padding: 40px 24px;
     text-align: center;
     color: $text-secondary;
     font-style: italic;
-    font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+    font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
     background-color: rgba($background-color, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+
     &::before {
-      content: 'sentiment_satisfied';  // Ícone mais amigável
+      content: 'sentiment_satisfied'; // Ícone mais amigável
       font-family: 'Material Icons';
       font-size: 48px;
       color: rgba($text-secondary, 0.3);
       margin-bottom: 16px;
     }
   }
-  
+
   .view-all {
     text-align: center;
     padding: 20px;
     background: linear-gradient(to bottom, rgba($primary-color, 0.02), rgba($primary-color, 0.05));
     border-top: 1px solid rgba($border-color, 0.7);
-    border-radius: 0 0 24px 24px;  // Cantos inferiores arredondados
-    
+    border-radius: 0 0 24px 24px; // Cantos inferiores arredondados
+
     a {
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      font-family: 'Quicksand', 'Nunito', sans-serif;  // Fonte mais arredondada
+      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
       font-weight: 600;
       color: $primary-color;
       display: inline-flex;
       align-items: center;
       transition: all 0.3s;
-      
+
       &:hover {
         transform: scale(1.05);
         text-decoration: none;
         color: $primary-dark;
       }
-      
+
       &::after {
         content: '';
         font-family: 'Material Icons';
@@ -499,7 +523,7 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
         margin-left: 8px;
         transition: transform 0.3s;
       }
-      
+
       &:hover::after {
         transform: translateX(4px);
       }
@@ -509,14 +533,78 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
 
 // Animações suaves
 @keyframes fadeIn {
-  from { 
+  from {
     opacity: 0;
     transform: translateY(10px) scale(0.98);
   }
-  to { 
+
+  to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
+
+.custom-nav-list {
+  padding-top: 20px;
+
+  .custom-nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    height: 56px;
+    border-radius: 0 30px 30px 0;
+    margin: 8px 16px 8px 0;
+    color: $text-secondary;
+    transition: all 0.3s;
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    font-size: 15px;
+
+    &.active {
+      background-color: rgba($primary-color, 0.12);
+      color: $primary-color;
+      font-weight: 600;
+    }
+
+    &:hover:not(.active) {
+      background-color: rgba($text-secondary, 0.05);
+      transform: translateX(4px);
+    }
+
+    .icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      width: 24px;
+      height: 24px;
+
+      .mat-icon {
+        color: $text-secondary;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    &.active .icon-container .mat-icon {
+      color: $primary-color;
+    }
+
+    .label-container {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.mdc-list-item__content,
+.mdc-list-item__text,
+.mat-mdc-list-item-unscoped-content {
+  display: flex !important;
+  align-items: center !important;
+}
+
 
 // Estilo global adicional para o arquivo styles.scss

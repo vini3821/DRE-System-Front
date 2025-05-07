@@ -1,15 +1,43 @@
+// src/app/entry-form/entry-form.component.ts
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { EntriesService } from '../services/entries.service';
 import { CollaboratorService } from '../services/collaborator.service';
 import { BankService } from '../services/bank.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Entry } from '../models/entry.model';
 import { Collaborator } from '../models/collaborator.model';
 import { Bank } from '../models/bank.model';
+import { routes } from './../app.routes';
+
 
 @Component({
     selector: 'app-entry-form',
+    standalone: true,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatButtonModule,
+        MatProgressSpinnerModule,
+        MatProgressBarModule,
+        RouterModule,
+        MatIconModule
+    ],
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss']
 })
@@ -66,9 +94,11 @@ export class EntryFormComponent implements OnInit {
                     fkc: entry.fkc,
                     fkBank: entry.fkBank
                 });
+                this.loading = false;
             },
             error: (error) => {
                 console.error('Error loading entry', error);
+                this.loading = false;
             }
         });
     }
@@ -77,7 +107,7 @@ export class EntryFormComponent implements OnInit {
         this.collaboratorService.getCollaborators().subscribe({
             next: (data) => {
                 this.collaborators = data;
-                this.loading = false;
+                if (!this.isEdit) this.loading = false;
             },
             error: (error) => {
                 console.error('Error loading collaborators', error);
@@ -90,9 +120,11 @@ export class EntryFormComponent implements OnInit {
         this.bankService.getBanks().subscribe({
             next: (data) => {
                 this.banks = data;
+                if (!this.isEdit) this.loading = false;
             },
             error: (error) => {
                 console.error('Error loading banks', error);
+                this.loading = false;
             }
         });
     }

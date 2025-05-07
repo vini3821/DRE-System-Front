@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ViewChild, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -50,6 +50,7 @@ export class DashboardComponent implements OnInit {
     loading = false;
     displayedColumns: string[] = ['date', 'type', 'value', 'collaborator', 'costCenter', 'actions'];
     isMobile = false;
+    isBrowser: boolean = false;
 
     // Configuração para o gráfico
     public doughnutChartOptions: ChartConfiguration['options'] = {
@@ -62,7 +63,7 @@ export class DashboardComponent implements OnInit {
             }
         }
     };
-      
+
     public doughnutChartData: ChartData<'doughnut'> = {
         labels: ['Receitas', 'Despesas'],
         datasets: [
@@ -72,17 +73,21 @@ export class DashboardComponent implements OnInit {
             }
         ]
     };
-      
+
     public doughnutChartType: ChartType = 'doughnut';
-    
+
     constructor(
         private entriesService: EntriesService,
         private snackBar: MatSnackBar,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        @Inject(PLATFORM_ID) private platformId: Object
     ) {
-        // Verificar se é dispositivo móvel
-        this.checkScreenSize();
-        window.addEventListener('resize', () => this.checkScreenSize());
+        this.isBrowser = isPlatformBrowser(this.platformId);
+        // Verificar se é dispositivo móvel apenas no navegador
+        if (this.isBrowser) {
+            this.checkScreenSize();
+            window.addEventListener('resize', () => this.checkScreenSize());
+        }
     }
 
     ngOnInit() {
@@ -95,11 +100,13 @@ export class DashboardComponent implements OnInit {
     }
 
     checkScreenSize() {
-        this.isMobile = window.innerWidth < 768;
-        if (this.isMobile && this.sidenav) {
-            this.sidenav.close();
-        } else if (this.sidenav) {
-            this.sidenav.open();
+        if (isPlatformBrowser(this.platformId)) {
+            this.isMobile = window.innerWidth < 768;
+            if (this.isMobile && this.sidenav) {
+                this.sidenav.close();
+            } else if (this.sidenav) {
+                this.sidenav.open();
+            }
         }
     }
 
@@ -151,8 +158,17 @@ export class DashboardComponent implements OnInit {
                 }
             }
         ];
-        
+
         this.calculateTotals();
+    }
+
+    ngAfterViewInit() {
+        // Inicializa o Chart.js apenas no navegador
+        if (isPlatformBrowser(this.platformId)) {
+            import('chart.js').then(Chart => {
+                Chart.Chart.register(...Chart.registerables);
+            });
+        }
     }
 
     calculateTotals() {
@@ -178,11 +194,11 @@ export class DashboardComponent implements OnInit {
             { id: 2, name: 'Maria Santos', center: 'Marketing' },
             { id: 3, name: 'Carlos Oliveira', center: 'TI' }
         ];
-        
+
         const randomType = types[Math.floor(Math.random() * types.length)];
         const randomCollaborator = collaborators[Math.floor(Math.random() * collaborators.length)];
         const randomValue = Math.floor(Math.random() * 5000) + 500;
-        
+
         const newEntry: Entry = {
             entryID: this.entries.length + 1,
             entryDate: new Date(),
@@ -194,13 +210,13 @@ export class DashboardComponent implements OnInit {
                 costCenter: { description: randomCollaborator.center }
             }
         };
-        
+
         this.entries.unshift(newEntry);
         this.calculateTotals();
-        
+
         this.snackBar.open(
-            `${randomType} de R$ ${randomValue.toFixed(2)} adicionada com sucesso!`, 
-            'Fechar', 
+            `${randomType} de R$ ${randomValue.toFixed(2)} adicionada com sucesso!`,
+            'Fechar',
             { duration: 3000 }
         );
     }
@@ -211,10 +227,10 @@ export class DashboardComponent implements OnInit {
         if (entryToRemove) {
             this.entries = this.entries.filter(e => e.entryID !== entryId);
             this.calculateTotals();
-            
+
             this.snackBar.open(
-                `${entryToRemove.entryType} de R$ ${entryToRemove.value.toFixed(2)} removida com sucesso!`, 
-                'Fechar', 
+                `${entryToRemove.entryType} de R$ ${entryToRemove.value.toFixed(2)} removida com sucesso!`,
+                'Fechar',
                 { duration: 3000 }
             );
         }

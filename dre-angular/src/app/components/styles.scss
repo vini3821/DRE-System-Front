@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 // Importação das fontes arredondadas
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap');
@@ -108,6 +108,7 @@ body {
 
     .mat-icon {
         margin-right: 8px;
+
     }
 }
 
@@ -309,8 +310,77 @@ body {
         margin: 4px !important;
         font-family: 'Quicksand', 'Nunito', sans-serif !important;
 
+
         .mat-icon {
             color: #5b6bbf !important;
         }
     }
+}
+
+
+.mat-mdc-list-item-content {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.mat-mdc-list-item .mdc-list-item__content {
+    display: flex !important;
+    align-items: center !important;
+}
+
+span.mdc-list-item__content {
+    align-items: center !important;
+    display: flex !important;
+    height: 100% !important;
+}
+
+.mat-nav-list a.mat-list-item .mat-icon {
+    vertical-align: middle !important;
+    margin-right: 16px !important;
+}
+
+.mat-nav-list a.mat-list-item span {
+    vertical-align: middle !important;
+    padding-top: 3px !important;
+}
+
+.mdc-list-item {
+    display: flex !important;
+    align-items: center !important;
+    height: 56px !important;
+}
+
+.mdc-list-item__primary-text {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.mdc-list-item__start {
+    display: flex !important;
+    align-items: center !important;
+    margin-right: 16px !important;
+}
+
+.mat-mdc-list-item-icon {
+    margin-right: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.mat-icon {
+    font-family: 'Material Icons' !important;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
 }

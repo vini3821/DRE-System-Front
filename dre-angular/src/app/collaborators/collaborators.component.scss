@@ -1,0 +1,167 @@
+// collaborators.component.scss
+@import '../components/dashboard.component.scss'; // Importe os estilos base
+
+
+.collaborators-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .mat-card {
+        @include card-base;
+
+        .mat-card-header {
+            background: linear-gradient(to right, rgba($primary-color, 0.06), rgba($primary-color, 0.01));
+            padding: 24px 28px;
+            border-bottom: 1px solid rgba($border-color, 0.7);
+            display: flex;
+            align-items: center;
+
+            .mat-card-title {
+                margin: 0;
+                font-size: 19px;
+                font-weight: 600;
+                font-family: 'Quicksand', 'Nunito', sans-serif;
+                color: $primary-color;
+                display: flex;
+                align-items: center;
+
+                &::before {
+                    content: '';
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    margin-right: 12px;
+                    background-color: $primary-color;
+                    border-radius: 50%;
+                }
+            }
+
+            .header-actions {
+                margin-left: auto;
+
+                button {
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    font-family: 'Quicksand', 'Nunito', sans-serif;
+                    font-weight: 600;
+                    border-radius: 18px;
+                    padding: 0 20px;
+                    height: 42px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                    transition: all 0.3s;
+
+                    &:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+                    }
+
+                    .mat-icon {
+                        margin-right: 8px;
+                    }
+                }
+            }
+        }
+
+        .mat-card-content {
+            padding: 0;
+        }
+    }
+
+    .collaborators-table {
+        width: 100%;
+
+        th.mat-header-cell {
+            background-color: rgba($primary-color, 0.04);
+            color: $text-secondary;
+            font-weight: 600;
+            font-family: 'Quicksand', 'Nunito', sans-serif;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            padding: 18px 22px;
+            border-bottom: 2px solid rgba($primary-color, 0.08);
+        }
+
+        td.mat-cell {
+            padding: a8px 22px;
+            color: $text-primary;
+            font-family: 'Quicksand', 'Nunito', sans-serif;
+            border-bottom: 1px solid rgba($border-color, 0.6);
+            font-size: 15px;
+        }
+
+        tr.mat-row {
+            transition: all 0.3s;
+
+            &:hover {
+                background-color: rgba($primary-color, 0.03);
+                transform: scale(1.01);
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+
+            button {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                @include flex-center;
+                transition: all 0.3s;
+
+                .mat-icon {
+                    font-size: 20px;
+                    width: 20px;
+                    height: 20px;
+                    line-height: 20px;
+                }
+            }
+
+            .edit-button {
+                background-color: rgba($primary-color, 0.1);
+                color: $primary-color;
+
+                &:hover {
+                    background-color: $primary-color;
+                    color: white;
+                    transform: translateY(-3px) rotate(8deg);
+                    box-shadow: 0 5px 15px rgba($primary-color, 0.25);
+                }
+            }
+
+            .delete-button {
+                background-color: rgba($expense-color, 0.1);
+                color: $expense-color;
+
+                &:hover {
+                    background-color: $expense-color;
+                    color: white;
+                    transform: translateY(-3px) rotate(-8deg);
+                    box-shadow: 0 5px 15px rgba($expense-color, 0.25);
+                }
+            }
+        }
+    }
+
+    .no-data {
+        padding: 40px 24px;
+        text-align: center;
+        color: $text-secondary;
+        font-style: italic;
+        font-family: 'Quicksand', 'Nunito', sans-serif;
+        background-color: rgba($background-color, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &::before {
+            content: 'sentiment_satisfied';
+            font-family: 'Material Icons';
+            font-size: 48px;
+            color: rgba($text-secondary, 0.3);
+            margin-bottom: 16px;
+        }
+    }
+}
