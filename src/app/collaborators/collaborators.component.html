@@ -1,0 +1,56 @@
+<!-- collaborators.component.html -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="collaborators-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Colaboradores</mat-card-title>
+            <div class="header-actions">
+                <button mat-raised-button color="primary" routerLink="/collaborators/new">
+                    <mat-icon>add</mat-icon> Novo Colaborador
+                </button>
+            </div>
+        </mat-card-header>
+
+        <mat-card-content>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+            <table mat-table [dataSource]="collaborators" class="collaborators-table">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Nome</th>
+                    <td mat-cell *matCellDef="let collaborator">{{collaborator.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="costCenter">
+                    <th mat-header-cell *matHeaderCellDef>Centro de Custo</th>
+                    <td mat-cell *matCellDef="let collaborator">{{collaborator.costCenter?.description}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Ações</th>
+                    <td mat-cell *matCellDef="let collaborator">
+                        <div class="action-buttons">
+                            <button mat-icon-button class="edit-button"
+                                [routerLink]="['/collaborators', collaborator.collaboratorID]"
+                                matTooltip="Editar colaborador" matRipple>
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button class="delete-button"
+                                (click)="confirmDelete(collaborator.collaboratorID)" matTooltip="Excluir colaborador"
+                                matRipple>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <div *ngIf="!loading && collaborators.length === 0" class="no-data">
+                Nenhum colaborador encontrado
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

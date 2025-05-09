@@ -1,0 +1,88 @@
+<div class="reports-container">
+    <mat-card class="filter-card">
+        <mat-card-header>
+            <mat-card-title>Filtros</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="filterForm" (ngSubmit)="applyFilter()">
+                <div class="filter-form">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Data Início</mat-label>
+                        <input matInput [matDatepicker]="pickerStart" formControlName="dateStart">
+                        <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerStart></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Data Fim</mat-label>
+                        <input matInput [matDatepicker]="pickerEnd" formControlName="dateEnd">
+                        <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerEnd></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Tipo de Relatório</mat-label>
+                        <mat-select formControlName="reportType">
+                            <mat-option value="daily">Diário</mat-option>
+                            <mat-option value="weekly">Semanal</mat-option>
+                            <mat-option value="monthly">Mensal</mat-option>
+                            <mat-option value="yearly">Anual</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <button mat-raised-button color="primary" type="submit">
+                        <mat-icon>filter_list</mat-icon> Aplicar Filtros
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+    <div class="export-actions">
+        <button mat-raised-button color="accent" (click)="exportPDF()">
+            <mat-icon>picture_as_pdf</mat-icon> Exportar como PDF
+        </button>
+        <button mat-raised-button color="primary" (click)="exportExcel()">
+            <mat-icon>table_chart</mat-icon> Exportar como Excel
+        </button>
+    </div>
+
+    <mat-card class="report-card">
+        <mat-card-header>
+            <mat-card-title>Relatórios</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-tab-group>
+                <mat-tab label="Receitas x Despesas">
+                    <div class="chart-container">
+                        <!-- Renderize o canvas apenas no navegador -->
+                        <ng-container *ngIf="isBrowser">
+                            <canvas baseChart [type]="barChartType" [data]="barChartData" [options]="barChartOptions"
+                                height="300">
+                            </canvas>
+                        </ng-container>
+                        <!-- Fallback para o servidor -->
+                        <div *ngIf="!isBrowser" class="chart-placeholder">
+                            Carregando gráfico...
+                        </div>
+                    </div>
+                </mat-tab>
+
+                <mat-tab label="Distribuição por Centro de Custo">
+                    <div class="chart-container">
+                        <!-- Renderize o canvas apenas no navegador -->
+                        <ng-container *ngIf="isBrowser">
+                            <canvas baseChart [type]="pieChartType" [data]="pieChartData" [options]="pieChartOptions"
+                                height="300">
+                            </canvas>
+                        </ng-container>
+                        <!-- Fallback para o servidor -->
+                        <div *ngIf="!isBrowser" class="chart-placeholder">
+                            Carregando gráfico...
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card-content>
+    </mat-card>
+</div>

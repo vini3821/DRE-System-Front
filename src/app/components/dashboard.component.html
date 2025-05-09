@@ -1,0 +1,209 @@
+<div class="dashboard-container">
+  <mat-toolbar color="primary" class="dashboard-toolbar">
+    <button mat-icon-button (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>Sistema DRE</span>
+    <span class="spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon>
+        <span>Perfil</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Sair</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <mat-sidenav-container class="dashboard-sidenav-container">
+    <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" class="dashboard-sidenav">
+      <div class="custom-nav-list">
+        <a class="custom-nav-item" routerLink="/dashboard" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>dashboard</mat-icon>
+          </div>
+          <div class="label-container">Dashboard</div>
+        </a>
+        <a class="custom-nav-item" routerLink="/entries" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>receipt</mat-icon>
+          </div>
+          <div class="label-container">Lançamentos</div>
+        </a>
+        <a class="custom-nav-item" routerLink="/collaborators" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="label-container">Colaboradores</div>
+        </a>
+        <a class="custom-nav-item" routerLink="/cost-centers" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>business</mat-icon>
+          </div>
+          <div class="label-container">Centros de Custo</div>
+        </a>
+        <a class="custom-nav-item" routerLink="/regions" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>location_on</mat-icon>
+          </div>
+          <div class="label-container">Regiões</div>
+        </a>
+        <a class="custom-nav-item" routerLink="/sectors" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>category</mat-icon>
+          </div>
+          <div class="label-container">Setores</div>
+        </a>
+        <a class="custom-nav-item" routerLink="/banks" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>account_balance</mat-icon>
+          </div>
+          <div class="label-container">Bancos</div>
+        </a>
+        <a class="custom-nav-item" routerLink="/reports" routerLinkActive="active">
+          <div class="icon-container">
+            <mat-icon>bar_chart</mat-icon>
+          </div>
+          <div class="label-container">Relatórios</div>
+        </a>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="dashboard-content">
+      <div class="content-container">
+        <div class="stats-cards">
+          <mat-card>
+            <mat-card-content>
+              <div class="stat-label">Receitas</div>
+              <div class="stat-value revenue">R$ {{totalRevenue | number:'1.2-2'}}</div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card>
+            <mat-card-content>
+              <div class="stat-label">Despesas</div>
+              <div class="stat-value expense">R$ {{totalExpense | number:'1.2-2'}}</div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card>
+            <mat-card-content>
+              <div class="stat-label">Resultado</div>
+              <div class="stat-value" [ngClass]="netResult >= 0 ? 'revenue' : 'expense'">
+                R$ {{netResult | number:'1.2-2'}}
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="chart-container">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Demonstrativo de Resultado</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div style="height: 250px; width: 100%;">
+                <!-- Renderize o canvas apenas no navegador -->
+                <ng-container *ngIf="isBrowser">
+                  <canvas baseChart [type]="doughnutChartType" [data]="doughnutChartData"
+                    [options]="doughnutChartOptions">
+                  </canvas>
+                </ng-container>
+                <!-- Fallback para o servidor -->
+                <div *ngIf="!isBrowser" class="chart-placeholder">
+                  Carregando gráfico...
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="entries-list">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Últimos Lançamentos</mat-card-title>
+              <div class="header-actions">
+                <button mat-raised-button color="accent" routerLink="/entries/new">
+                  <mat-icon>add_circle</mat-icon> Novo Lançamento
+                </button>
+
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+              <table mat-table [dataSource]="entries.slice(0, 5)" class="entries-table">
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Data</th>
+                  <td mat-cell *matCellDef="let entry">{{entry.entryDate | date:'dd/MM/yyyy'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                  <td mat-cell *matCellDef="let entry">
+                    <span class="entry-type"
+                      [ngClass]="entry.entryType === 'Receita' ? 'revenue-type' : 'expense-type'">
+                      {{entry.entryType}}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="value">
+                  <th mat-header-cell *matHeaderCellDef>Valor</th>
+                  <td mat-cell *matCellDef="let entry">
+                    <span [ngClass]="entry.entryType === 'Receita' ? 'revenue' : 'expense'">
+                      R$ {{entry.value | number:'1.2-2'}}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="collaborator">
+                  <th mat-header-cell *matHeaderCellDef>Colaborador</th>
+                  <td mat-cell *matCellDef="let entry">{{entry.collaborator?.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="costCenter">
+                  <th mat-header-cell *matHeaderCellDef>Centro de Custo</th>
+                  <td mat-cell *matCellDef="let entry">{{entry.collaborator?.costCenter?.description}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Ações</th>
+                  <td mat-cell *matCellDef="let entry">
+                    <div class="action-buttons">
+                      <button mat-icon-button class="edit-button" [routerLink]="['/entries', entry.entryID]"
+                        matTooltip="Editar lançamento" matRipple>
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button class="delete-button" (click)="confirmDelete(entry.entryID)"
+                        matTooltip="Excluir lançamento" matRipple>
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                </tr>
+              </table>
+
+              <div *ngIf="!loading && entries.length === 0" class="no-data">
+                Nenhum lançamento encontrado
+              </div>
+
+              <div class="view-all">
+                <a mat-button color="primary" routerLink="/entries">Ver todos os lançamentos</a>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

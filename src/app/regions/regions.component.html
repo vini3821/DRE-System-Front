@@ -1,0 +1,53 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="regions-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Regiões</mat-card-title>
+            <div class="header-actions">
+                <button mat-raised-button color="primary" routerLink="/regions/new">
+                    <mat-icon>add</mat-icon> Nova Região
+                </button>
+            </div>
+        </mat-card-header>
+
+        <mat-card-content>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+            <table mat-table [dataSource]="regions" class="regions-table">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Nome</th>
+                    <td mat-cell *matCellDef="let region">{{region.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef>Código</th>
+                    <td mat-cell *matCellDef="let region">{{region.code}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Ações</th>
+                    <td mat-cell *matCellDef="let region">
+                        <div class="action-buttons">
+                            <button mat-icon-button class="edit-button" [routerLink]="['/regions', region.regionID]"
+                                matTooltip="Editar região" matRipple>
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button class="delete-button" (click)="confirmDelete(region.regionID)"
+                                matTooltip="Excluir região" matRipple>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <div *ngIf="!loading && regions.length === 0" class="no-data">
+                Nenhuma região encontrada
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -1,0 +1,76 @@
+<!-- src/app/entries/entries.component.html -->
+<div class="entries-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Lançamentos</mat-card-title>
+            <div class="header-actions">
+                <button mat-raised-button color="primary" routerLink="/entries/new">
+                    <mat-icon>add</mat-icon> Novo Lançamento
+                </button>
+            </div>
+        </mat-card-header>
+
+        <mat-card-content>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+            <table mat-table [dataSource]="entries" class="entries-table">
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Data</th>
+                    <td mat-cell *matCellDef="let entry">{{entry.entryDate | date:'dd/MM/yyyy'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                    <td mat-cell *matCellDef="let entry">
+                        <span class="entry-type"
+                            [ngClass]="entry.entryType === 'Receita' ? 'revenue-type' : 'expense-type'">
+                            {{entry.entryType}}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="value">
+                    <th mat-header-cell *matHeaderCellDef>Valor</th>
+                    <td mat-cell *matCellDef="let entry">
+                        <span [ngClass]="entry.entryType === 'Receita' ? 'revenue' : 'expense'">
+                            R$ {{entry.value | number:'1.2-2'}}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="collaborator">
+                    <th mat-header-cell *matHeaderCellDef>Colaborador</th>
+                    <td mat-cell *matCellDef="let entry">{{entry.collaborator?.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="costCenter">
+                    <th mat-header-cell *matHeaderCellDef>Centro de Custo</th>
+                    <td mat-cell *matCellDef="let entry">{{entry.collaborator?.costCenter?.description}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Ações</th>
+                    <td mat-cell *matCellDef="let entry">
+                        <div class="action-buttons">
+                            <button mat-icon-button class="edit-button" [routerLink]="['/entries', entry.entryID]"
+                                matTooltip="Editar lançamento" matRipple>
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button class="delete-button" (click)="confirmDelete(entry.entryID)"
+                                matTooltip="Excluir lançamento" matRipple>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <div *ngIf="!loading && entries.length === 0" class="no-data">
+                Nenhum lançamento encontrado
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
