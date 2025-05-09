@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
@@ -36,7 +37,8 @@ import { routes } from './../app.routes';
         MatProgressSpinnerModule,
         MatProgressBarModule,
         RouterModule,
-        MatIconModule
+        MatIconModule,
+        MatSnackBarModule
     ],
     templateUrl: './entry-form.component.html',
     styleUrls: ['./entry-form.component.scss']
@@ -56,7 +58,8 @@ export class EntryFormComponent implements OnInit {
         private collaboratorService: CollaboratorService,
         private bankService: BankService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private snackBar: MatSnackBar
     ) {
         this.entryForm = this.formBuilder.group({
             entryDate: [new Date(), Validators.required],
@@ -130,9 +133,7 @@ export class EntryFormComponent implements OnInit {
     }
 
     onSubmit() {
-        if (this.entryForm.invalid) {
-            return;
-        }
+        if (this.entryForm.invalid) return;
 
         this.submitLoading = true;
         const entryData = this.entryForm.value;
@@ -141,9 +142,11 @@ export class EntryFormComponent implements OnInit {
             this.entriesService.updateEntry(this.entryId, entryData).subscribe({
                 next: () => {
                     this.router.navigate(['/entries']);
+                    this.snackBar.open('Lançamento atualizado com sucesso!', 'Fechar', { duration: 3000 });
                 },
                 error: (error) => {
                     console.error('Error updating entry', error);
+                    this.snackBar.open('Erro ao atualizar lançamento!', 'Fechar', { duration: 3000 });
                     this.submitLoading = false;
                 }
             });

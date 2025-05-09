@@ -1,4 +1,4 @@
-@import '../components/styles.scss';
+@use '../components/styles.scss' as styles;
 
 .entries-container {
     padding: 24px;

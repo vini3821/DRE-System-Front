@@ -1,36 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Collaborator } from '../models/collaborator.model';
-
+import { environment } from './environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CollaboratorService {
-    // Para desenvolvimento, use dados mockados
-    private mockCollaborators: Collaborator[] = [
-        {
-            collaboratorID: 1,
-            name: 'João Silva',
-            fkcc: 1,
-            costCenter: { description: 'Financeiro' }
-        },
-        {
-            collaboratorID: 2,
-            name: 'Maria Santos',
-            fkcc: 2,
-            costCenter: { description: 'Marketing' }
-        }
-    ];
+    private apiUrl = `${environment.apiUrl}/collaborators`;
 
     constructor(private http: HttpClient) { }
 
     getCollaborators(): Observable<Collaborator[]> {
-        // Para desenvolvimento, retorne dados mockados
-        return of(this.mockCollaborators);
+        return this.http.get<Collaborator[]>(this.apiUrl);
+    }
 
-        // Quando conectar à API real:
-        // return this.http.get<Collaborator[]>(`${environment.apiUrl}/collaborators`);
+    getCollaborator(id: number): Observable<Collaborator> {
+        return this.http.get<Collaborator>(`${this.apiUrl}/${id}`);
+    }
+
+    createCollaborator(collaborator: Collaborator): Observable<Collaborator> {
+        return this.http.post<Collaborator>(this.apiUrl, collaborator);
+    }
+
+    updateCollaborator(id: number, collaborator: Collaborator): Observable<Collaborator> {
+        return this.http.put<Collaborator>(`${this.apiUrl}/${id}`, collaborator);
+    }
+
+    deleteCollaborator(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/${id}`);
     }
 }

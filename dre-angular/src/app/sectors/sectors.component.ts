@@ -1,3 +1,4 @@
+// src/app/sectors/sectors.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -5,36 +6,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
-
-// Modelo básico para Setor
-interface Sector {
-    sectorID: number;
-    name: string;
-    description: string;
-}
-
-// Serviço temporário simulado
-class SectorService {
-    getSectors() {
-        return {
-            subscribe: (callbacks: any) => {
-                // Dados simulados
-                const sectors = [
-                    { sectorID: 1, name: 'Comércio', description: 'Setor de comércio' },
-                    { sectorID: 2, name: 'Indústria', description: 'Setor industrial' },
-                    { sectorID: 3, name: 'Serviços', description: 'Setor de serviços' },
-                    { sectorID: 4, name: 'Tecnologia', description: 'Setor de tecnologia' }
-                ];
-
-                // Simula um atraso de rede
-                setTimeout(() => {
-                    callbacks.next(sectors);
-                }, 500);
-            }
-        };
-    }
-}
+import { SectorService, Sector } from '../services/sector.service';
 
 @Component({
     selector: 'app-sectors',
@@ -46,28 +20,38 @@ class SectorService {
         MatButtonModule,
         MatIconModule,
         MatProgressBarModule,
+        MatSnackBarModule,
         RouterModule
     ],
     templateUrl: './sectors.component.html',
-    styleUrls: ['./sectors.component.scss'],
-    providers: [SectorService]
+    styleUrls: ['./sectors.component.scss']
 })
 export class SectorsComponent implements OnInit {
     sectors: Sector[] = [];
     loading = false;
     displayedColumns: string[] = ['name', 'description', 'actions'];
 
-    constructor(private sectorService: SectorService) { }
+    constructor(
+        private sectorService: SectorService,
+        private snackBar: MatSnackBar
+    ) { }
 
     ngOnInit() {
         this.loading = true;
+        this.loadSectors();
+    }
+
+    loadSectors() {
         this.sectorService.getSectors().subscribe({
-            next: (data: any) => {
+            next: (data) => {
                 this.sectors = data;
                 this.loading = false;
             },
-            error: (error: any) => {
-                console.error('Error loading sectors', error);
+            error: (error) => {
+                console.error('Erro ao carregar setores', error);
+                this.snackBar.open('Erro ao carregar dados. Verifique a conexão com o servidor.', 'Fechar', {
+                    duration: 5000
+                });
                 this.loading = false;
             }
         });
@@ -75,8 +59,24 @@ export class SectorsComponent implements OnInit {
 
     confirmDelete(id: number) {
         if (confirm('Tem certeza que deseja excluir este setor?')) {
-            // Implementação simulada de exclusão
-            this.sectors = this.sectors.filter(s => s.sectorID !== id);
+            this.deleteSector(id);
         }
+    }
+
+    deleteSector(id: number) {
+        this.sectorService.deleteSector(id).subscribe({
+            next: () => {
+                this.sectors = this.sectors.filter(s => s.sectorID !== id);
+                this.snackBar.open('Setor excluído com sucesso!', 'Fechar', {
+                    duration: 3000
+                });
+            },
+            error: (error) => {
+                console.error(`Erro ao excluir setor com ID ${id}`, error);
+                this.snackBar.open('Erro ao excluir setor', 'Fechar', {
+                    duration: 3000
+                });
+            }
+        });
     }
 }

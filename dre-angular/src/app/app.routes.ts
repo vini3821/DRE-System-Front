@@ -7,6 +7,7 @@ import { CollaboratorsComponent } from './collaborators/collaborators.component'
 import { CostCentersComponent } from './cost-centers/cost-centers.component';
 import { RegionsComponent } from './regions/regions.component';
 import { SectorsComponent } from './sectors/sectors.component';
+import { SectorFormComponent } from './sector-form/sector-form.component';
 import { BanksComponent } from './banks/banks.component';
 import { ReportsComponent } from './reports/reports.component';
 
@@ -21,6 +22,8 @@ export const routes: Routes = [
     { path: 'cost-centers', component: CostCentersComponent },
     { path: 'regions', component: RegionsComponent },
     { path: 'sectors', component: SectorsComponent },
+    { path: 'sectors/new', component: SectorFormComponent },
+    { path: 'sectors/:id', component: SectorFormComponent },
     { path: 'banks', component: BanksComponent },
     { path: 'reports', component: ReportsComponent },
     { path: '**', redirectTo: '/dashboard' }

@@ -39,13 +39,20 @@ export class EntriesComponent implements OnInit {
 
     ngOnInit() {
         this.loading = true;
+        this.loadEntries();
+    }
+
+    loadEntries() {
         this.entriesService.getEntries().subscribe({
             next: (data) => {
                 this.entries = data;
                 this.loading = false;
             },
             error: (error) => {
-                console.error('Error loading entries', error);
+                console.error('Erro ao carregar lançamentos', error);
+                this.snackBar.open('Erro ao carregar dados. Verifique a conexão com o servidor.', 'Fechar', {
+                    duration: 5000
+                });
                 this.loading = false;
             }
         });
@@ -53,9 +60,24 @@ export class EntriesComponent implements OnInit {
 
     confirmDelete(entryId: number) {
         if (confirm('Tem certeza que deseja excluir este lançamento?')) {
-            // Implementação simulada de exclusão para este exemplo
-            this.entries = this.entries.filter(e => e.entryID !== entryId);
-            this.snackBar.open('Lançamento excluído com sucesso!', 'Fechar', { duration: 3000 });
+            this.deleteEntry(entryId);
         }
+    }
+
+    deleteEntry(entryId: number) {
+        this.entriesService.deleteEntry(entryId).subscribe({
+            next: () => {
+                this.entries = this.entries.filter(e => e.entryID !== entryId);
+                this.snackBar.open('Lançamento excluído com sucesso!', 'Fechar', {
+                    duration: 3000
+                });
+            },
+            error: (error) => {
+                console.error(`Erro ao excluir lançamento com ID ${entryId}`, error);
+                this.snackBar.open('Erro ao excluir lançamento', 'Fechar', {
+                    duration: 3000
+                });
+            }
+        });
     }
 }

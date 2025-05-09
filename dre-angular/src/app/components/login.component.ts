@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../services/environment';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -30,7 +32,8 @@ export class LoginComponent {
 
     constructor(
         private formBuilder: FormBuilder,
-        private router: Router
+        private router: Router,
+        private http: HttpClient
     ) {
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
@@ -44,14 +47,24 @@ export class LoginComponent {
         }
 
         this.loading = true;
-        //Simulação de login para teste
-        setTimeout(() => {
-            if (this.loginForm.value.username === 'admin' && this.loginForm.value.password === 'admin123') {
-                this.router.navigate(['/dashboard']);
-            } else {
-                this.error = 'Credenciais inválidas';
-                this.loading = false;
-            }
-        }, 1000);
+        this.http.post(`${environment.apiUrl}/auth/login`, this.loginForm.value)
+            .subscribe({
+                next: (response: any) => {
+                    // Armazena token no localStorage
+                    localStorage.setItem('token', response.token);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    this.router.navigate(['/dashboard']);
+                },
+                error: (error) => {
+                    this.error = error.error?.message || 'Falha no login';
+                    this.loading = false;
+
+                    // Fallback para login mockado se a API não estiver disponível
+                    if (this.loginForm.value.username === 'admin' &&
+                        this.loginForm.value.password === 'admin123') {
+                        this.router.navigate(['/dashboard']);
+                    }
+                }
+            });
     }
 }

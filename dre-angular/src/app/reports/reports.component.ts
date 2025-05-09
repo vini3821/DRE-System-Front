@@ -1,3 +1,4 @@
+// src/app/reports/reports.component.ts
 import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -8,59 +9,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-
-// Dados simulados para os relatórios
-class ReportService {
-    getRevenueExpenseData() {
-        return {
-            subscribe: (callbacks: any) => {
-                const data = {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                    datasets: [
-                        {
-                            label: 'Receitas',
-                            data: [12000, 15000, 18000, 14000, 20000, 22000],
-                            backgroundColor: '#66bb6a'
-                        },
-                        {
-                            label: 'Despesas',
-                            data: [10000, 12000, 14000, 15000, 16000, 18000],
-                            backgroundColor: '#ef5350'
-                        }
-                    ]
-                };
-
-                setTimeout(() => {
-                    callbacks.next(data);
-                }, 500);
-            }
-        };
-    }
-
-    getCostCenterData() {
-        return {
-            subscribe: (callbacks: any) => {
-                const data = {
-                    labels: ['Criação', 'Financeiro', 'TI', 'RH', 'Vendas', 'Tráfego Pago', 'Assessoria', 'Televendas'],
-                    datasets: [
-                        {
-                            data: [25, 20, 30, 15, 10],
-                            backgroundColor: ['#ef5350', '#66bb6a', '#5b6bbf', '#4db6ac', '#ffa726']
-                        }
-                    ]
-                };
-
-                setTimeout(() => {
-                    callbacks.next(data);
-                }, 500);
-            }
-        };
-    }
-}
+import { ReportService } from '../services/report.service';
 
 @Component({
     selector: 'app-reports',
@@ -75,13 +29,13 @@ class ReportService {
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        MatSnackBarModule,
         ReactiveFormsModule,
         RouterModule,
         BaseChartDirective
     ],
     templateUrl: './reports.component.html',
-    styleUrls: ['./reports.component.scss'],
-    providers: [ReportService]
+    styleUrls: ['./reports.component.scss']
 })
 export class ReportsComponent implements OnInit {
     isBrowser: boolean = false;
@@ -136,6 +90,7 @@ export class ReportsComponent implements OnInit {
     constructor(
         private reportService: ReportService,
         private formBuilder: FormBuilder,
+        private snackBar: MatSnackBar,
         @Inject(PLATFORM_ID) private platformId: Object
     ) {
         this.isBrowser = isPlatformBrowser(this.platformId);
@@ -162,42 +117,100 @@ export class ReportsComponent implements OnInit {
     }
 
     loadRevenueExpenseData() {
-        this.reportService.getRevenueExpenseData().subscribe({
+        const startDate = this.filterForm.value.dateStart;
+        const endDate = this.filterForm.value.dateEnd;
+        
+        this.reportService.getRevenueExpenseData(startDate, endDate).subscribe({
             next: (data: any) => {
                 this.barChartData = data;
             },
             error: (error: any) => {
-                console.error('Error loading revenue/expense data', error);
+                console.error('Erro ao carregar dados de receita/despesa', error);
+                this.snackBar.open('Erro ao carregar dados do relatório', 'Fechar', {
+                    duration: 3000
+                });
             }
         });
     }
 
     loadCostCenterData() {
-        this.reportService.getCostCenterData().subscribe({
+        const startDate = this.filterForm.value.dateStart;
+        const endDate = this.filterForm.value.dateEnd;
+        
+        this.reportService.getCostCenterData(startDate, endDate).subscribe({
             next: (data: any) => {
                 this.pieChartData = data;
             },
             error: (error: any) => {
-                console.error('Error loading cost center data', error);
+                console.error('Erro ao carregar dados de centro de custo', error);
+                this.snackBar.open('Erro ao carregar dados do relatório', 'Fechar', {
+                    duration: 3000
+                });
             }
         });
     }
 
     applyFilter() {
-        // Na implementação real, aqui você chamaria o serviço com os parâmetros do filtro
         console.log('Aplicando filtros:', this.filterForm.value);
-        // Recarregar os dados com base nos filtros
         this.loadRevenueExpenseData();
         this.loadCostCenterData();
     }
 
     exportPDF() {
-        alert('Exportando relatório como PDF...');
-        // Implementar a exportação real aqui
+        const startDate = this.filterForm.value.dateStart;
+        const endDate = this.filterForm.value.dateEnd;
+        const reportType = this.filterForm.value.reportType;
+        
+        this.reportService.exportPDF(reportType, startDate, endDate).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `relatorio_${reportType}_${new Date().toISOString().slice(0, 10)}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+                
+                this.snackBar.open('Relatório PDF exportado com sucesso!', 'Fechar', {
+                    duration: 3000
+                });
+            },
+            error: (error) => {
+                console.error('Erro ao exportar PDF', error);
+                this.snackBar.open('Erro ao exportar relatório', 'Fechar', {
+                    duration: 3000
+                });
+            }
+        });
     }
 
     exportExcel() {
-        alert('Exportando relatório como Excel...');
-        // Implementar a exportação real aqui
+        const startDate = this.filterForm.value.dateStart;
+        const endDate = this.filterForm.value.dateEnd;
+        const reportType = this.filterForm.value.reportType;
+        
+        this.reportService.exportExcel(reportType, startDate, endDate).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `relatorio_${reportType}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+                
+                this.snackBar.open('Relatório Excel exportado com sucesso!', 'Fechar', {
+                    duration: 3000
+                });
+            },
+            error: (error) => {
+                console.error('Erro ao exportar Excel', error);
+                this.snackBar.open('Erro ao exportar relatório', 'Fechar', {
+                    duration: 3000
+                });
+            }
+        });
     }
 }
