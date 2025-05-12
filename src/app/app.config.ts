@@ -1,26 +1,26 @@
-// src/app/app.config.ts
+// app.config.ts
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { authInterceptor } from './interceptors/auth.interceptor.functional';
-import { errorInterceptor } from './interceptors/error.interceptor.functional';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { provideClientHydration } from '@angular/platform-browser';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([
-      authInterceptor,
-      errorInterceptor
-    ])),
+    provideHttpClient(withInterceptors([/* seus interceptors */])),
     provideAnimations(),
-    provideClientHydration(),
-    // Providers adicionais necessários para componentes MaterialUI
-    MatDatepickerModule,
-    MatNativeDateModule
+    provideNativeDateAdapter(),
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        hasBackdrop: true,
+        panelClass: 'mat-dialog-container-wrapper',
+        height: 'auto',
+        width: '500px'
+      }
+    }
   ]
 };

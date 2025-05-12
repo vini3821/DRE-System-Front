@@ -176,3 +176,28 @@ body {
 }
 
 // Resto do seu CSS permanece igual...
+
+// Estilos globais para diálogos
+.mat-dialog-container {
+    padding: 24px;
+    border-radius: 8px !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.entry-modal-dialog {
+    .mat-dialog-container {
+        padding: 0;
+        overflow: hidden;
+    }
+}
+
+// Garantir que o backdrop seja visível
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+    opacity: 0.5 !important;
+}
+
+// Garantir que o conteúdo do diálogo seja visível
+.mat-dialog-content {
+    max-height: 70vh;
+    padding: 20px 24px;
+}

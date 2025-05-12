@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -19,8 +20,7 @@ import { BankService } from '../services/bank.service';
 import { Entry } from '../models/entry.model';
 import { Collaborator } from '../models/collaborator.model';
 import { Bank } from '../models/bank.model';
-import { routes } from './../app.routes';
-
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
     selector: 'app-entry-form',
@@ -33,6 +33,7 @@ import { routes } from './../app.routes';
         MatInputModule,
         MatSelectModule,
         MatDatepickerModule,
+        MatNativeDateModule, // Adicionado aqui
         MatButtonModule,
         MatProgressSpinnerModule,
         MatProgressBarModule,
@@ -51,6 +52,8 @@ export class EntryFormComponent implements OnInit {
     entryId: number | null = null;
     loading = false;
     submitLoading = false;
+    loadingCollaborators = false;
+    loadingBanks = false;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -61,6 +64,7 @@ export class EntryFormComponent implements OnInit {
         private route: ActivatedRoute,
         private snackBar: MatSnackBar
     ) {
+        console.log('EntryFormComponent construtor iniciado');
         this.entryForm = this.formBuilder.group({
             entryDate: [new Date(), Validators.required],
             entryType: ['Receita', Validators.required],
@@ -71,95 +75,177 @@ export class EntryFormComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log('EntryFormComponent - ngOnInit iniciado');
         this.loading = true;
+
+        // Carrega dados básicos mesmo que ocorram erros
+        this.loadInitialData();
 
         // Check if edit mode
         this.route.params.subscribe(params => {
+            console.log('EntryFormComponent - params recebidos:', params);
             if (params['id']) {
                 this.isEdit = true;
                 this.entryId = +params['id'];
                 this.loadEntry(this.entryId);
+            } else {
+                // Se não for modo de edição, garantir que loading seja alterado para false
+                setTimeout(() => {
+                    if (this.loading) {
+                        console.log('EntryFormComponent - forçando loading para false (timeout)');
+                        this.loading = false;
+                    }
+                }, 2000);
             }
         });
+    }
 
-        // Load collaborators and banks
-        this.loadCollaborators();
-        this.loadBanks();
+    private loadInitialData() {
+        try {
+            this.loadCollaborators();
+            this.loadBanks();
+        } catch (error) {
+            console.error('EntryFormComponent - Erro ao carregar dados iniciais:', error);
+            this.loading = false;
+            this.snackBar.open('Erro ao carregar dados iniciais. O formulário pode não funcionar corretamente.', 'OK');
+        }
     }
 
     loadEntry(id: number) {
-        this.entriesService.getEntry(id).subscribe({
-            next: (entry) => {
-                this.entryForm.patchValue({
-                    entryDate: new Date(entry.entryDate),
-                    entryType: entry.entryType,
-                    value: entry.value,
-                    fkc: entry.fkc,
-                    fkBank: entry.fkBank
-                });
+        console.log(`EntryFormComponent - carregando entrada ${id}`);
+        this.entriesService.getEntry(id)
+            .pipe(
+                catchError(error => {
+                    console.error('EntryFormComponent - Erro ao carregar entrada:', error);
+                    this.snackBar.open('Erro ao carregar o lançamento. Tente novamente.', 'OK');
+                    this.loading = false;
+                    return of(null);
+                }),
+                finalize(() => {
+                    console.log('EntryFormComponent - finalizou carregamento da entrada');
+                    // Garante que loading ficará falso mesmo se a operação falhar
+                    setTimeout(() => this.loading = false, 0);
+                })
+            )
+            .subscribe(entry => {
+                if (entry) {
+                    console.log('EntryFormComponent - dados da entrada recebidos:', entry);
+                    this.entryForm.patchValue({
+                        entryDate: new Date(entry.entryDate),
+                        entryType: entry.entryType,
+                        value: entry.value,
+                        fkc: entry.fkc,
+                        fkBank: entry.fkBank
+                    });
+                }
                 this.loading = false;
-            },
-            error: (error) => {
-                console.error('Error loading entry', error);
-                this.loading = false;
-            }
-        });
+            });
     }
 
     loadCollaborators() {
-        this.collaboratorService.getCollaborators().subscribe({
-            next: (data) => {
-                this.collaborators = data;
-                if (!this.isEdit) this.loading = false;
-            },
-            error: (error) => {
-                console.error('Error loading collaborators', error);
-                this.loading = false;
-            }
-        });
+        console.log('EntryFormComponent - carregando colaboradores');
+        this.loadingCollaborators = true;
+        this.collaboratorService.getCollaborators()
+            .pipe(
+                catchError(error => {
+                    console.error('EntryFormComponent - Erro ao carregar colaboradores:', error);
+                    this.snackBar.open('Erro ao carregar colaboradores. Alguns dados podem estar incompletos.', 'OK');
+                    this.loadingCollaborators = false;
+                    return of([]);
+                }),
+                finalize(() => {
+                    this.loadingCollaborators = false;
+                    this.checkLoadingComplete();
+                })
+            )
+            .subscribe(data => {
+                console.log('EntryFormComponent - colaboradores carregados:', data?.length || 0);
+                this.collaborators = data || [];
+            });
     }
 
     loadBanks() {
-        this.bankService.getBanks().subscribe({
-            next: (data) => {
-                this.banks = data;
-                if (!this.isEdit) this.loading = false;
-            },
-            error: (error) => {
-                console.error('Error loading banks', error);
-                this.loading = false;
-            }
-        });
+        console.log('EntryFormComponent - carregando bancos');
+        this.loadingBanks = true;
+        this.bankService.getBanks()
+            .pipe(
+                catchError(error => {
+                    console.error('EntryFormComponent - Erro ao carregar bancos:', error);
+                    this.snackBar.open('Erro ao carregar bancos. Alguns dados podem estar incompletos.', 'OK');
+                    this.loadingBanks = false;
+                    return of([]);
+                }),
+                finalize(() => {
+                    this.loadingBanks = false;
+                    this.checkLoadingComplete();
+                })
+            )
+            .subscribe(data => {
+                console.log('EntryFormComponent - bancos carregados:', data?.length || 0);
+                this.banks = data || [];
+            });
+    }
+
+    checkLoadingComplete() {
+        if (!this.loadingCollaborators && !this.loadingBanks && !this.isEdit) {
+            console.log('EntryFormComponent - todos os dados carregados, alterando loading para false');
+            this.loading = false;
+        }
     }
 
     onSubmit() {
-        if (this.entryForm.invalid) return;
+        console.log('EntryFormComponent - formulário submetido');
+        if (this.entryForm.invalid) {
+            console.log('EntryFormComponent - formulário inválido:', this.entryForm.errors);
+            return;
+        }
 
         this.submitLoading = true;
         const entryData = this.entryForm.value;
+        console.log('EntryFormComponent - dados do formulário:', entryData);
 
         if (this.isEdit && this.entryId) {
-            this.entriesService.updateEntry(this.entryId, entryData).subscribe({
-                next: () => {
-                    this.router.navigate(['/entries']);
-                    this.snackBar.open('Lançamento atualizado com sucesso!', 'Fechar', { duration: 3000 });
-                },
-                error: (error) => {
-                    console.error('Error updating entry', error);
-                    this.snackBar.open('Erro ao atualizar lançamento!', 'Fechar', { duration: 3000 });
-                    this.submitLoading = false;
-                }
-            });
+            this.entriesService.updateEntry(this.entryId, entryData)
+                .pipe(
+                    catchError(error => {
+                        console.error('EntryFormComponent - Erro ao atualizar entrada:', error);
+                        this.snackBar.open('Erro ao atualizar lançamento!', 'Fechar', { duration: 3000 });
+                        this.submitLoading = false;
+                        return of(null);
+                    }),
+                    finalize(() => {
+                        console.log('EntryFormComponent - finalizou atualização');
+                        // Garante que submitLoading ficará falso mesmo se a operação falhar
+                        setTimeout(() => this.submitLoading = false, 0);
+                    })
+                )
+                .subscribe(result => {
+                    if (result) {
+                        this.router.navigate(['/entries']);
+                        this.snackBar.open('Lançamento atualizado com sucesso!', 'Fechar', { duration: 3000 });
+                    }
+                });
         } else {
-            this.entriesService.createEntry(entryData).subscribe({
-                next: () => {
-                    this.router.navigate(['/entries']);
-                },
-                error: (error) => {
-                    console.error('Error creating entry', error);
-                    this.submitLoading = false;
-                }
-            });
+            this.entriesService.createEntry(entryData)
+                .pipe(
+                    catchError(error => {
+                        console.error('EntryFormComponent - Erro ao criar entrada:', error);
+                        this.snackBar.open('Erro ao criar lançamento!', 'Fechar', { duration: 3000 });
+                        this.submitLoading = false;
+                        return of(null);
+                    }),
+                    finalize(() => {
+                        console.log('EntryFormComponent - finalizou criação');
+                        // Garante que submitLoading ficará falso mesmo se a operação falhar
+                        setTimeout(() => this.submitLoading = false, 0);
+                    })
+                )
+                .subscribe(result => {
+                    if (result) {
+                        this.router.navigate(['/entries']);
+                        this.snackBar.open('Lançamento criado com sucesso!', 'Fechar', { duration: 3000 });
+                    }
+                });
         }
     }
 }

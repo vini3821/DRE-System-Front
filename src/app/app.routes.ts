@@ -11,13 +11,15 @@ import { SectorsComponent } from './sectors/sectors.component';
 import { SectorFormComponent } from './sector-form/sector-form.component';
 import { BanksComponent } from './banks/banks.component';
 import { ReportsComponent } from './reports/reports.component';
+import { EntryModalComponent } from './entries/entry-modal/entry-modal.component';
+
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'dashboard', component: DashboardComponent },
     { path: 'entries', component: EntriesComponent },
-    { path: 'entries/new', component: EntryFormComponent },
+    { path: 'entries/new', component: EntryModalComponent },
     { path: 'entries/:id', component: EntryFormComponent },
     { path: 'collaborators', component: CollaboratorsComponent },
     { path: 'cost-centers', component: CostCentersComponent },

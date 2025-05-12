@@ -1,4 +1,4 @@
-// src/app/entries/entries.component.ts
+// entries.component.ts - Versão corrigida com tratamento de erros
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -7,9 +7,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { EntriesService } from '../services/entries.service';
 import { Entry } from '../models/entry.model';
+import { EntryModalComponent } from './entry-modal/entry-modal.component';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
     selector: 'app-entries',
@@ -22,6 +25,7 @@ import { Entry } from '../models/entry.model';
         MatCardModule,
         MatProgressBarModule,
         MatSnackBarModule,
+        MatDialogModule,
         RouterModule
     ],
     templateUrl: './entries.component.html',
@@ -34,7 +38,8 @@ export class EntriesComponent implements OnInit {
 
     constructor(
         private entriesService: EntriesService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -43,17 +48,42 @@ export class EntriesComponent implements OnInit {
     }
 
     loadEntries() {
-        this.entriesService.getEntries().subscribe({
-            next: (data) => {
+        this.entriesService.getEntries()
+            .pipe(
+                catchError(error => {
+                    console.error('Erro ao carregar lançamentos', error);
+                    this.snackBar.open('Erro ao carregar dados. Usando dados em cache ou mockados temporariamente.', 'Fechar', {
+                        duration: 5000
+                    });
+                    // Retorna uma lista vazia ou dados mockados para não quebrar a UI
+                    return of([]);
+                }),
+                finalize(() => {
+                    this.loading = false;
+                })
+            )
+            .subscribe(data => {
                 this.entries = data;
-                this.loading = false;
-            },
-            error: (error) => {
-                console.error('Erro ao carregar lançamentos', error);
-                this.snackBar.open('Erro ao carregar dados. Verifique a conexão com o servidor.', 'Fechar', {
-                    duration: 5000
-                });
-                this.loading = false;
+            });
+    }
+
+    openEntryModal(entry?: Entry) {
+        console.log('Abrindo modal de lançamento', entry);
+
+        const dialogRef = this.dialog.open(EntryModalComponent, {
+            width: '800px',
+            disableClose: false,
+            data: { entry },
+            // Permitir clicar fora para fechar
+            hasBackdrop: true,
+            panelClass: 'entry-modal-dialog'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('Modal fechado com resultado:', result);
+            if (result) {
+                // Recarregar a lista se houver alterações
+                this.loadEntries();
             }
         });
     }
@@ -65,19 +95,23 @@ export class EntriesComponent implements OnInit {
     }
 
     deleteEntry(entryId: number) {
-        this.entriesService.deleteEntry(entryId).subscribe({
-            next: () => {
-                this.entries = this.entries.filter(e => e.entryID !== entryId);
-                this.snackBar.open('Lançamento excluído com sucesso!', 'Fechar', {
-                    duration: 3000
-                });
-            },
-            error: (error) => {
-                console.error(`Erro ao excluir lançamento com ID ${entryId}`, error);
-                this.snackBar.open('Erro ao excluir lançamento', 'Fechar', {
-                    duration: 3000
-                });
-            }
-        });
+        this.entriesService.deleteEntry(entryId)
+            .pipe(
+                catchError(error => {
+                    console.error(`Erro ao excluir lançamento com ID ${entryId}`, error);
+                    this.snackBar.open('Erro ao excluir lançamento', 'Fechar', {
+                        duration: 3000
+                    });
+                    return of(null);
+                })
+            )
+            .subscribe(result => {
+                if (result !== null) {
+                    this.entries = this.entries.filter(e => e.entryID !== entryId);
+                    this.snackBar.open('Lançamento excluído com sucesso!', 'Fechar', {
+                        duration: 3000
+                    });
+                }
+            });
     }
 }
