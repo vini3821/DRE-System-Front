@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>{{isEdit ? 'Editar' : 'Novo'}} Colaborador</h2>
+
+<div mat-dialog-content>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+    <form [formGroup]="collaboratorForm" class="form-container">
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" placeholder="Nome do colaborador">
+            <mat-error *ngIf="collaboratorForm.controls['name'].hasError('required')">
+                Nome é obrigatório
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Centro de Custo</mat-label>
+            <mat-select formControlName="fkcc" [compareWith]="compareCostCenters">
+                <mat-option *ngIf="costCenters.length === 0" disabled>Nenhum centro de custo disponível</mat-option>
+                <mat-option *ngFor="let costCenter of costCenters; trackBy: trackByCostCenter"
+                    [value]="costCenter.costCenterID">
+                    {{costCenter.description}}
+                </mat-option>
+            </mat-select>
+            <mat-hint *ngIf="costCenters.length === 0" style="color: #f44336;">
+                Você precisa adicionar centros de custo primeiro
+            </mat-hint>
+            <mat-error *ngIf="collaboratorForm.controls['fkcc'].hasError('required')">
+                Centro de Custo é obrigatório
+            </mat-error>
+        </mat-form-field>
+    </form>
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSubmit()"
+        [disabled]="collaboratorForm.invalid || submitLoading">
+        <mat-spinner *ngIf="submitLoading" diameter="20"></mat-spinner>
+        <span *ngIf="!submitLoading">{{isEdit ? 'Atualizar' : 'Salvar'}}</span>
+    </button>
+</div>

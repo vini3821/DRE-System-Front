@@ -6,7 +6,7 @@
         <mat-card-header>
             <mat-card-title>Colaboradores</mat-card-title>
             <div class="header-actions">
-                <button mat-raised-button color="primary" routerLink="/collaborators/new">
+                <button mat-raised-button color="primary" (click)="openCollaboratorModal()">
                     <mat-icon>add</mat-icon> Novo Colaborador
                 </button>
             </div>
@@ -31,7 +31,7 @@
                     <td mat-cell *matCellDef="let collaborator">
                         <div class="action-buttons">
                             <button mat-icon-button class="edit-button"
-                                [routerLink]="['/collaborators', collaborator.collaboratorID]"
+                                (click)="openCollaboratorModal(collaborator)"
                                 matTooltip="Editar colaborador" matRipple>
                                 <mat-icon>edit</mat-icon>
                             </button>

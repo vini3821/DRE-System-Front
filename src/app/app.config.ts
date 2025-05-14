@@ -19,8 +19,9 @@ export const appConfig: ApplicationConfig = {
         hasBackdrop: true,
         panelClass: 'mat-dialog-container-wrapper',
         height: 'auto',
-        width: '500px'
+        width: '500px',
+        appearance: 'outline'
       }
-    }
+    },
   ]
 };

@@ -1,0 +1,78 @@
+:host {
+    display: block;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+[mat-dialog-title] {
+    margin: 0;
+    padding: 16px 24px;
+    background-color: #f8f9fa;
+    font-size: 20px;
+    font-weight: 500;
+    color: #5b6bbf;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[mat-dialog-content] {
+    padding: 20px 24px;
+    overflow: visible;
+}
+
+[mat-dialog-actions] {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    margin: 0;
+}
+
+button[mat-raised-button] {
+    min-width: 120px;
+    position: relative;
+    cursor: pointer !important; // Garante que o cursor seja de clique
+    z-index: 1; // Garante que o botão esteja acima de outros elementos
+
+    &:not([disabled]) {
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        &:active {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+        }
+    }
+
+    mat-spinner {
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    span {
+        display: inline-block;
+        padding: 0 8px;
+    }
+}
+
+// Garantir que o dropdown apareça corretamente
+::ng-deep {
+    .mat-mdc-select-value {
+        display: flex !important;
+        visibility: visible !important;
+    }
+
+    .mat-mdc-form-field-infix {
+        display: flex !important;
+    }
+}

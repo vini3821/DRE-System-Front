@@ -5,7 +5,8 @@
         <mat-card-header>
             <mat-card-title>Regiões</mat-card-title>
             <div class="header-actions">
-                <button mat-raised-button color="primary" routerLink="/regions/new">
+                <!-- Alterado para chamar o método openRegionModal em vez de usar routerLink -->
+                <button mat-raised-button color="primary" (click)="openRegionModal()">
                     <mat-icon>add</mat-icon> Nova Região
                 </button>
             </div>
@@ -29,7 +30,8 @@
                     <th mat-header-cell *matHeaderCellDef>Ações</th>
                     <td mat-cell *matCellDef="let region">
                         <div class="action-buttons">
-                            <button mat-icon-button class="edit-button" [routerLink]="['/regions', region.regionID]"
+                            <!-- Alterado para chamar o método openRegionModal em vez de usar routerLink -->
+                            <button mat-icon-button class="edit-button" (click)="openRegionModal(region)"
                                 matTooltip="Editar região" matRipple>
                                 <mat-icon>edit</mat-icon>
                             </button>

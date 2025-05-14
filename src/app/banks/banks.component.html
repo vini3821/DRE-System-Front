@@ -1,9 +1,12 @@
+<!-- src/app/banks/banks.component.html -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <div class="banks-container">
     <mat-card>
         <mat-card-header>
             <mat-card-title>Bancos</mat-card-title>
             <div class="header-actions">
-                <button mat-raised-button color="primary" routerLink="/banks/new">
+                <button mat-raised-button color="primary" (click)="openBankModal()">
                     <mat-icon>add</mat-icon> Novo Banco
                 </button>
             </div>
@@ -27,7 +30,7 @@
                     <th mat-header-cell *matHeaderCellDef>Ações</th>
                     <td mat-cell *matCellDef="let bank">
                         <div class="action-buttons">
-                            <button mat-icon-button class="edit-button" [routerLink]="['/banks', bank.bankID]"
+                            <button mat-icon-button class="edit-button" (click)="openBankModal(bank)"
                                 matTooltip="Editar banco" matRipple>
                                 <mat-icon>edit</mat-icon>
                             </button>

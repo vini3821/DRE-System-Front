@@ -1,4 +1,3 @@
-// src/app/regions/regions.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -7,8 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRippleModule } from '@angular/material/core';
 import { RouterModule } from '@angular/router';
 import { RegionService, Region } from '../services/region.service';
+import { RegionModalComponent } from './region-modal/region-modal.component';
 
 @Component({
     selector: 'app-regions',
@@ -21,6 +24,9 @@ import { RegionService, Region } from '../services/region.service';
         MatIconModule,
         MatProgressBarModule,
         MatSnackBarModule,
+        MatDialogModule,
+        MatTooltipModule,
+        MatRippleModule,
         RouterModule
     ],
     templateUrl: './regions.component.html',
@@ -33,7 +39,8 @@ export class RegionsComponent implements OnInit {
 
     constructor(
         private regionService: RegionService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -53,6 +60,27 @@ export class RegionsComponent implements OnInit {
                     duration: 5000
                 });
                 this.loading = false;
+            }
+        });
+    }
+
+    openRegionModal(region?: Region) {
+        console.log('Abrindo modal de região', region);
+
+        const dialogRef = this.dialog.open(RegionModalComponent, {
+            width: '600px',
+            disableClose: false,
+            data: { region },
+            autoFocus: true,
+            panelClass: ['animated', 'fadeIn', 'custom-dialog-container'],
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '200ms'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('Modal fechado com resultado:', result);
+            if (result) {
+                this.loadRegions();
             }
         });
     }

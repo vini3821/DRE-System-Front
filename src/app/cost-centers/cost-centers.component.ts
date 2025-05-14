@@ -7,8 +7,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRippleModule } from '@angular/material/core';
 import { RouterModule } from '@angular/router';
 import { CostCenterService, CostCenter } from '../services/cost-center.service';
+import { CostCenterModalComponent } from './cost-centers-modal/cost-center-modal.component';
 
 @Component({
     selector: 'app-cost-centers',
@@ -21,6 +25,9 @@ import { CostCenterService, CostCenter } from '../services/cost-center.service';
         MatIconModule,
         MatProgressBarModule,
         MatSnackBarModule,
+        MatDialogModule,
+        MatTooltipModule,
+        MatRippleModule,
         RouterModule
     ],
     templateUrl: './cost-centers.component.html',
@@ -33,7 +40,8 @@ export class CostCentersComponent implements OnInit {
 
     constructor(
         private costCenterService: CostCenterService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -53,6 +61,27 @@ export class CostCentersComponent implements OnInit {
                     duration: 5000
                 });
                 this.loading = false;
+            }
+        });
+    }
+
+    openCostCenterModal(costCenter?: CostCenter) {
+        console.log('Abrindo modal de centro de custo', costCenter);
+
+        const dialogRef = this.dialog.open(CostCenterModalComponent, {
+            width: '600px',
+            disableClose: false,
+            data: { costCenter },
+            autoFocus: true,
+            panelClass: ['animated', 'fadeIn', 'custom-dialog-container'],
+            enterAnimationDuration: '300ms',
+            exitAnimationDuration: '200ms'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('Modal fechado com resultado:', result);
+            if (result) {
+                this.loadCostCenters();
             }
         });
     }

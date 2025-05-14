@@ -201,3 +201,63 @@ body {
     max-height: 70vh;
     padding: 20px 24px;
 }
+
+$primary-palette: mat.define-palette(mat.$indigo-palette, 600);
+$accent-palette: mat.define-palette(mat.$teal-palette, 300);
+
+.mat-mdc-dialog-container {
+    --mdc-dialog-container-shape: 8px;
+    --mdc-dialog-container-elevation: 24px;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+// Estilos globais para campos de formulário
+.mat-mdc-form-field {
+    font-family: 'Quicksand', 'Nunito', sans-serif;
+}
+
+// Ajustes para botões
+.mat-mdc-raised-button.mat-primary {
+    --mdc-protected-button-container-color: #5b6bbf;
+    --mdc-protected-button-label-text-color: white;
+}
+
+// Ajustes para spinner
+.mat-mdc-progress-spinner {
+    --mdc-circular-progress-active-indicator-color: white;
+}
+
+.animated {
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+
+.dialog-backdrop {
+    backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.custom-dialog-container {
+    .mat-mdc-dialog-surface {
+        border-radius: 16px;
+    }
+}

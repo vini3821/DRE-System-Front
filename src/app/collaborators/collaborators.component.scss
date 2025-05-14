@@ -1,7 +1,6 @@
 // collaborators.component.scss
 @import '../components/dashboard.component.scss'; // Importe os estilos base
 
-
 .collaborators-container {
     padding: 24px;
     max-width: 1200px;
@@ -84,7 +83,7 @@
         }
 
         td.mat-cell {
-            padding: a8px 22px;
+            padding: 18px 22px; // Corrigido de a8px para 18px
             color: $text-primary;
             font-family: 'Quicksand', 'Nunito', sans-serif;
             border-bottom: 1px solid rgba($border-color, 0.6);

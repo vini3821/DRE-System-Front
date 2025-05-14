@@ -4,7 +4,8 @@
         <mat-card-header>
             <mat-card-title>Setores</mat-card-title>
             <div class="header-actions">
-                <button mat-raised-button color="primary" routerLink="/sectors/new">
+                <!-- Alterado para chamar o método openSectorModal em vez de usar routerLink -->
+                <button mat-raised-button color="primary" (click)="openSectorModal()">
                     <mat-icon>add</mat-icon> Novo Setor
                 </button>
             </div>
@@ -28,7 +29,8 @@
                     <th mat-header-cell *matHeaderCellDef>Ações</th>
                     <td mat-cell *matCellDef="let sector">
                         <div class="action-buttons">
-                            <button mat-icon-button class="edit-button" [routerLink]="['/sectors', sector.sectorID]"
+                            <!-- Alterado para chamar o método openSectorModal em vez de usar routerLink -->
+                            <button mat-icon-button class="edit-button" (click)="openSectorModal(sector)"
                                 matTooltip="Editar setor" matRipple>
                                 <mat-icon>edit</mat-icon>
                             </button>

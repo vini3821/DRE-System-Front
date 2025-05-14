@@ -1,10 +1,11 @@
+<!-- src/app/cost-centers/cost-centers.component.html -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="cost-centers-container">
     <mat-card>
         <mat-card-header>
             <mat-card-title>Centros de Custo</mat-card-title>
             <div class="header-actions">
-                <button mat-raised-button color="primary" routerLink="/cost-centers/new">
+                <button mat-raised-button color="primary" (click)="openCostCenterModal()">
                     <mat-icon>add</mat-icon> Novo Centro de Custo
                 </button>
             </div>
@@ -23,8 +24,7 @@
                     <th mat-header-cell *matHeaderCellDef>Ações</th>
                     <td mat-cell *matCellDef="let costCenter">
                         <div class="action-buttons">
-                            <button mat-icon-button class="edit-button"
-                                [routerLink]="['/cost-centers', costCenter.costCenterID]"
+                            <button mat-icon-button class="edit-button" (click)="openCostCenterModal(costCenter)"
                                 matTooltip="Editar centro de custo" matRipple>
                                 <mat-icon>edit</mat-icon>
                             </button>
