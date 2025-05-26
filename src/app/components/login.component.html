@@ -1,40 +1,108 @@
-<div class="login-container">
-    <mat-card class="login-card">
-        <mat-card-header>
-            <mat-card-title>
-                <h1>Sistema DRE</h1>
-            </mat-card-title>
-        </mat-card-header>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 
-        <mat-card-content>
+<div class="login-container">
+    <!-- Seção Esquerda - Bem-vindo -->
+    <div class="left-section">
+        <!-- Elementos geométricos decorativos -->
+        <div class="geometric-shapes">
+            <div class="shape chevron-1"></div>
+            <div class="shape chevron-2"></div>
+            <div class="shape chevron-3"></div>
+            <div class="shape circle-1"></div>
+            <div class="shape circle-2"></div>
+            <div class="shape wave-lines"></div>
+        </div>
+
+        <!-- Logo -->
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span class="logo-text">Sistema DRE</span>
+        </div>
+
+        <!-- Conteúdo de boas-vindas -->
+        <div class="welcome-content">
+            <h1>Olá,<br>bem-vindo!</h1>
+            <p>Acesse sua conta para gerenciar o sistema de demonstração de resultados de forma eficiente.</p>
+        </div>
+    </div>
+
+    <!-- Seção Direita - Formulário -->
+    <div class="right-section">
+        <div class="login-form-container">
+            <!-- Cabeçalho do formulário -->
+            <div class="form-header">
+                <h2>Fazer Login</h2>
+                <p>Digite suas credenciais para acessar</p>
+            </div>
+
+            <!-- Formulário -->
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <div class="login-form">
                     <mat-form-field appearance="outline">
-                        <mat-label>Usuário</mat-label>
-                        <input matInput formControlName="username" autocomplete="username">
+                        <mat-label>Email ou usuário</mat-label>
+                        <input matInput formControlName="username" autocomplete="username"
+                            placeholder="Digite seu email ou usuário">
+                        <mat-icon matSuffix>person_outline</mat-icon>
                         <mat-error *ngIf="loginForm.controls['username'].hasError('required')">
-                            Usuário é obrigatório
+                            Email ou usuário é obrigatório
                         </mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline">
                         <mat-label>Senha</mat-label>
-                        <input matInput type="password" formControlName="password" autocomplete="current-password">
+                        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+                            autocomplete="current-password" placeholder="Digite sua senha">
+                        <mat-icon matSuffix class="password-toggle" (click)="hidePassword = !hidePassword"
+                            [attr.aria-label]="'Mostrar senha'" [attr.aria-pressed]="!hidePassword">
+                            {{hidePassword ? 'visibility_off' : 'visibility'}}
+                        </mat-icon>
                         <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
                             Senha é obrigatória
                         </mat-error>
                     </mat-form-field>
 
                     <div *ngIf="error" class="error-message">
+                        <mat-icon>error_outline</mat-icon>
                         {{error}}
                     </div>
 
-                    <button mat-raised-button color="primary" type="submit" [disabled]="loading">
-                        <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
-                        <span *ngIf="!loading">Entrar</span>
-                    </button>
+                    <div class="login-actions">
+                        <button mat-raised-button type="submit" class="login-button"
+                            [disabled]="loading || loginForm.invalid"
+                            [attr.aria-label]="loading ? 'Fazendo login...' : 'Fazer login'">
+                            <mat-spinner diameter="20" color="accent" *ngIf="loading">
+                            </mat-spinner>
+                            <span *ngIf="!loading">Entrar</span>
+                            <span *ngIf="loading">Entrando...</span>
+                        </button>
+
+                        <div class="demo-info">
+                            <strong>Demo:</strong> Use <strong>admin</strong> / <strong>admin123</strong> para testar
+                        </div>
+                    </div>
                 </div>
             </form>
-        </mat-card-content>
-    </mat-card>
+
+            <!-- Login social (opcional) -->
+            <div class="social-login">
+                <div class="divider">
+                    <span>Ou conecte-se com</span>
+                </div>
+                <div class="social-buttons">
+                    <div class="social-btn" title="Google">
+                        <mat-icon>account_circle</mat-icon>
+                    </div>
+                    <div class="social-btn" title="Microsoft">
+                        <mat-icon>business</mat-icon>
+                    </div>
+                    <div class="social-btn" title="GitHub">
+                        <mat-icon>code</mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

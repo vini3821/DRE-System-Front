@@ -9,6 +9,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { catchError, finalize, of } from 'rxjs';
+
+// Interface para tipar a resposta do login
+interface LoginResponse {
+    token?: string;
+    user?: any;
+    success?: boolean;
+}
 
 @Component({
     selector: 'app-login',
@@ -20,7 +29,8 @@ import { MatCardModule } from '@angular/material/card';
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatCardModule
+        MatCardModule,
+        MatIconModule
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
@@ -29,6 +39,7 @@ export class LoginComponent {
     loginForm: FormGroup;
     error = '';
     loading = false;
+    hidePassword = true;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -47,23 +58,48 @@ export class LoginComponent {
         }
 
         this.loading = true;
-        this.http.post(`${environment.apiUrl}/auth/login`, this.loginForm.value)
-            .subscribe({
-                next: (response: any) => {
-                    // Armazena token no localStorage
-                    localStorage.setItem('token', response.token);
-                    localStorage.setItem('user', JSON.stringify(response.user));
-                    this.router.navigate(['/dashboard']);
-                },
-                error: (error) => {
-                    this.error = error.error?.message || 'Falha no login';
-                    this.loading = false;
-
+        this.error = '';
+        
+        this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, this.loginForm.value)
+            .pipe(
+                catchError(error => {
+                    console.error('Erro de login:', error);
+                    this.error = error.error?.message || 'Falha no login. Verifique suas credenciais.';
+                    
                     // Fallback para login mockado se a API não estiver disponível
                     if (this.loginForm.value.username === 'admin' &&
                         this.loginForm.value.password === 'admin123') {
-                        this.router.navigate(['/dashboard']);
+                        
+                        // Configura token e usuário mockados
+                        localStorage.setItem('token', 'mock-jwt-token');
+                        localStorage.setItem('user', JSON.stringify({
+                            name: 'Admin Demo',
+                            role: 'administrator'
+                        }));
+                        
+                        return of({ success: true } as LoginResponse);
                     }
+                    
+                    return of({ success: false } as LoginResponse);
+                }),
+                finalize(() => {
+                    this.loading = false;
+                })
+            )
+            .subscribe(response => {
+                // Agora response é tipado corretamente com a interface LoginResponse
+                if (response && response.success !== false) {
+                    // Se existir token na resposta original, salve-o
+                    if (response.token) {
+                        localStorage.setItem('token', response.token);
+                    }
+                    
+                    // Se existir user na resposta original, salve-o
+                    if (response.user) {
+                        localStorage.setItem('user', JSON.stringify(response.user));
+                    }
+                    
+                    this.router.navigate(['/dashboard']);
                 }
             });
     }
