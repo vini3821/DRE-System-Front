@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, finalize, of } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 // Interface para tipar a resposta do login
 interface LoginResponse {
@@ -30,7 +31,8 @@ interface LoginResponse {
         MatInputModule,
         MatButtonModule,
         MatCardModule,
-        MatIconModule
+        MatIconModule,
+        RouterModule,
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
@@ -59,27 +61,27 @@ export class LoginComponent {
 
         this.loading = true;
         this.error = '';
-        
+
         this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, this.loginForm.value)
             .pipe(
                 catchError(error => {
                     console.error('Erro de login:', error);
                     this.error = error.error?.message || 'Falha no login. Verifique suas credenciais.';
-                    
+
                     // Fallback para login mockado se a API não estiver disponível
                     if (this.loginForm.value.username === 'admin' &&
                         this.loginForm.value.password === 'admin123') {
-                        
+
                         // Configura token e usuário mockados
                         localStorage.setItem('token', 'mock-jwt-token');
                         localStorage.setItem('user', JSON.stringify({
                             name: 'Admin Demo',
                             role: 'administrator'
                         }));
-                        
+
                         return of({ success: true } as LoginResponse);
                     }
-                    
+
                     return of({ success: false } as LoginResponse);
                 }),
                 finalize(() => {
@@ -93,12 +95,12 @@ export class LoginComponent {
                     if (response.token) {
                         localStorage.setItem('token', response.token);
                     }
-                    
+
                     // Se existir user na resposta original, salve-o
                     if (response.user) {
                         localStorage.setItem('user', JSON.stringify(response.user));
                     }
-                    
+
                     this.router.navigate(['/dashboard']);
                 }
             });
