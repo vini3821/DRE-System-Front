@@ -1,0 +1,134 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+<div class="register-container">
+    <!-- Seção Esquerda - Bem-vindo -->
+    <div class="left-section">
+        <div class="geometric-shapes">
+            <div class="shape chevron-1"></div>
+            <div class="shape chevron-2"></div>
+            <div class="shape chevron-3"></div>
+            <div class="shape circle-1"></div>
+            <div class="shape circle-2"></div>
+            <div class="shape wave-lines"></div>
+        </div>
+
+        <!-- Logo -->
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span class="logo-text">Sistema DRE</span>
+        </div>
+
+        <!-- Conteúdo de boas-vindas -->
+        <div class="welcome-content">
+            <h1>Junte-se<br>a nós!</h1>
+            <p>Crie sua conta para começar a gerenciar o sistema de demonstração de resultados.</p>
+        </div>
+    </div>
+
+    <!-- Seção Direita - Formulário -->
+    <div class="right-section">
+        <div class="register-form-container">
+            <!-- Cabeçalho do formulário -->
+            <div class="form-header">
+                <h2>Criar Conta</h2>
+                <p>Preencha os dados para criar sua conta</p>
+            </div>
+
+            <!-- Formulário -->
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="register-form">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Nome completo</mat-label>
+                        <input matInput formControlName="name" placeholder="Digite seu nome completo">
+                        <mat-icon matSuffix>person_outline</mat-icon>
+                        <mat-error *ngIf="registerForm.controls['name'].hasError('required')">
+                            Nome é obrigatório
+                        </mat-error>
+                        <mat-error *ngIf="registerForm.controls['name'].hasError('minlength')">
+                            Nome deve ter pelo menos 2 caracteres
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div class="form-row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nome de usuário</mat-label>
+                            <input matInput formControlName="username" placeholder="Nome de usuário">
+                            <mat-icon matSuffix>alternate_email</mat-icon>
+                            <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
+                                Nome de usuário é obrigatório
+                            </mat-error>
+                            <mat-error *ngIf="registerForm.controls['username'].hasError('minlength')">
+                                Mínimo de 3 caracteres
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="email" type="email" placeholder="seu@email.com">
+                            <mat-icon matSuffix>email</mat-icon>
+                            <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
+                                Email é obrigatório
+                            </mat-error>
+                            <mat-error *ngIf="registerForm.controls['email'].hasError('email')">
+                                Email inválido
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Senha</mat-label>
+                            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+                                placeholder="Digite sua senha">
+                            <mat-icon matSuffix class="password-toggle" (click)="hidePassword = !hidePassword">
+                                {{hidePassword ? 'visibility_off' : 'visibility'}}
+                            </mat-icon>
+                            <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
+                                Senha é obrigatória
+                            </mat-error>
+                            <mat-error *ngIf="registerForm.controls['password'].hasError('minlength')">
+                                Mínimo de 6 caracteres
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Confirmar senha</mat-label>
+                            <input matInput [type]="hideConfirmPassword ? 'password' : 'text'"
+                                formControlName="confirmPassword" placeholder="Confirme sua senha">
+                            <mat-icon matSuffix class="password-toggle"
+                                (click)="hideConfirmPassword = !hideConfirmPassword">
+                                {{hideConfirmPassword ? 'visibility_off' : 'visibility'}}
+                            </mat-icon>
+                            <mat-error *ngIf="registerForm.controls['confirmPassword'].hasError('required')">
+                                Confirmação de senha é obrigatória
+                            </mat-error>
+                            <mat-error
+                                *ngIf="registerForm.hasError('passwordMismatch') && registerForm.controls['confirmPassword'].touched">
+                                Senhas não coincidem
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="register-actions">
+                        <button mat-raised-button type="submit" class="register-button"
+                            [disabled]="loading || registerForm.invalid">
+                            <mat-spinner diameter="20" color="accent" *ngIf="loading"></mat-spinner>
+                            <span *ngIf="!loading">Criar Conta</span>
+                            <span *ngIf="loading">Criando conta...</span>
+                        </button>
+
+                        <div class="login-link">
+                            Já tem uma conta?
+                            <button mat-button type="button" (click)="goToLogin()">
+                                Fazer login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
