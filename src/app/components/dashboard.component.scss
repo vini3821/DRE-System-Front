@@ -35,6 +35,58 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
   justify-content: center;
 }
 
+@mixin button-glow($color) {
+  box-shadow: 0 5px 15px rgba($color, 0.3);
+
+  &:hover {
+    box-shadow: 0 8px 25px rgba($color, 0.4);
+  }
+
+  &:active {
+    box-shadow: 0 3px 10px rgba($color, 0.3);
+  }
+}
+
+@mixin ripple-effect {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
+  }
+
+  &:active::after {
+    animation: ripple 0.6s ease-out;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 0.5;
+    }
+
+    20% {
+      transform: scale(25, 25);
+      opacity: 0.3;
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(40, 40);
+    }
+  }
+}
+
 //Estilos globais aconchegantes
 .dashboard-container {
   height: 100%;
@@ -54,26 +106,34 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
   border-radius: 0 0 24px 24px; // Cantos inferiores arredondados
   margin: 0 12px 12px 12px;
 
-  span {
+  .app-title {
     font-weight: 600;
     letter-spacing: 0.5px;
     font-size: 22px;
     color: white;
     font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
+    animation: fadeInDown 0.5s ease-out;
   }
 
   .spacer {
     flex: 1 1 auto;
   }
 
-  button {
+  .menu-button,
+  .user-button {
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
+    @include ripple-effect;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
       background-color: rgba(255, 255, 255, 0.15);
-      transform: scale(1.1);
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    &:active {
+      transform: scale(0.95);
     }
   }
 }
@@ -88,10 +148,10 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
     border-right: none;
     border-radius: 0 30px 30px 0;
     margin-right: 12px;
+    box-shadow: $shadow-medium;
 
     .mat-nav-list {
       padding-top: 20px;
-      
 
       a.mat-list-item {
         display: flex !important;
@@ -107,7 +167,6 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
         letter-spacing: 0.3px;
         font-size: 15px;
         padding: 0 16px;
-        
 
         &.active {
           background-color: rgba($primary-color, 0.12);
@@ -139,8 +198,6 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
     }
   }
 }
-
-
 
 // Dashboard content suave
 .dashboard-content {
@@ -217,6 +274,7 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
       font-weight: 700;
       font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
       letter-spacing: -0.5px;
+      animation: countUp 1.5s ease-out;
 
       &.revenue {
         color: $revenue-color;
@@ -304,12 +362,14 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
       border-bottom: 1px solid rgba($border-color, 0.7);
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      flex-wrap: nowrap; // Evita quebra de linha
 
       .mat-card-title {
         margin: 0;
         font-size: 19px;
         font-weight: 600;
-        font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
+        font-family: 'Quicksand', 'Nunito', sans-serif;
         color: $primary-color;
         display: flex;
         align-items: center;
@@ -321,38 +381,121 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
           height: 10px;
           margin-right: 12px;
           background-color: $primary-color;
-          border-radius: 50%; // Círculo em vez de quadrado
+          border-radius: 50%;
         }
       }
 
       .header-actions {
-        margin-left: auto;
         display: flex;
+        align-items: center;
         gap: 14px;
 
-        button {
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
+        // Novo botão de lançamento com design moderno e animações elegantes
+        .new-entry-button {
+          position: relative;
+          height: 48px;
+          padding: 0 28px;
+          border-radius: 24px;
+          border: none;
+          background: linear-gradient(135deg, $accent-color, darken($accent-color, 15%));
+          color: white;
+          font-family: 'Quicksand', 'Nunito', sans-serif;
           font-weight: 600;
-          border-radius: 18px; // Bordas mais arredondadas
-          padding: 0 20px;
-          height: 42px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-          transition: all 0.3s;
+          font-size: 15px;
+          letter-spacing: 0.3px;
+          text-transform: none;
+          overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          box-shadow: 0 10px 20px rgba($accent-color, 0.25);
+          @include ripple-effect;
 
-          &:first-child {
-            background-color: $accent-color;
-            color: white;
+          .button-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+          }
+
+          mat-icon {
+            font-size: 20px;
+            height: 20px;
+            width: 20px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          }
+
+          // Efeito de brilho
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0));
+            z-index: 1;
+            transition: left 0.7s ease-in-out;
+          }
+
+          // Efeito de ondulação de fundo
+          &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0) 60%);
+            z-index: 1;
+            transition: opacity 0.3s ease;
+            opacity: 0;
           }
 
           &:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 30px rgba($accent-color, 0.4);
+
+            &::before {
+              left: 100%;
+            }
+
+            &::after {
+              opacity: 1;
+            }
+
+            mat-icon {
+              transform: rotate(180deg) scale(1.2);
+            }
           }
 
-          .mat-icon {
-            margin-right: 8px;
+          &:active {
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 0 8px 15px rgba($accent-color, 0.3);
+          }
+
+          &:focus {
+            outline: none;
+            animation: pulse 2s infinite;
+          }
+
+          @keyframes pulse {
+            0% {
+              box-shadow: 0 10px 20px rgba($accent-color, 0.25);
+            }
+
+            50% {
+              box-shadow: 0 10px 30px rgba($accent-color, 0.5);
+            }
+
+            100% {
+              box-shadow: 0 10px 20px rgba($accent-color, 0.25);
+            }
           }
         }
       }
@@ -362,174 +505,183 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
       padding: 0;
     }
   }
+}
 
-  .entries-table {
-    width: 100%;
 
-    th.mat-header-cell {
-      background-color: rgba($primary-color, 0.04);
-      color: $text-secondary;
-      font-weight: 600;
-      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
-      text-transform: uppercase;
-      font-size: 13px;
-      letter-spacing: 0.5px;
-      padding: 18px 22px;
-      border-bottom: 2px solid rgba($primary-color, 0.08);
-    }
 
-    td.mat-cell {
-      padding: 18px 22px;
-      color: $text-primary;
-      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
-      border-bottom: 1px solid rgba($border-color, 0.6);
-      font-size: 15px;
 
-      &:first-of-type {
-        font-weight: 500;
-      }
-    }
 
-    tr.mat-row {
-      transition: all 0.3s;
+.entries-table {
+  width: 100%;
 
-      &:hover {
-        background-color: rgba($primary-color, 0.03);
-        transform: scale(1.01); // Efeito sutil de escala ao passar o mouse
-      }
-    }
-
-    .entry-type {
-      padding: 6px 16px;
-      border-radius: 30px; // Bordas bem arredondadas
-      font-size: 13px;
-      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
-      font-weight: 600;
-      display: inline-block;
-
-      &.revenue-type {
-        background-color: rgba($revenue-color, 0.12);
-        color: $revenue-color;
-      }
-
-      &.expense-type {
-        background-color: rgba($expense-color, 0.12);
-        color: $expense-color;
-      }
-    }
-
-    .revenue {
-      color: $revenue-color;
-      font-weight: 600;
-    }
-
-    .expense {
-      color: $expense-color;
-      font-weight: 600;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-
-      button {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%; // Botões circulares
-        @include flex-center;
-        transition: all 0.3s;
-
-        .mat-icon {
-          font-size: 20px;
-          width: 20px;
-          height: 20px;
-          line-height: 20px;
-        }
-      }
-
-      .edit-button {
-        background-color: rgba($primary-color, 0.1);
-        color: $primary-color;
-
-        &:hover {
-          background-color: $primary-color;
-          color: white;
-          transform: translateY(-3px) rotate(8deg); // Efeito de rotação ao passar o mouse
-          box-shadow: 0 5px 15px rgba($primary-color, 0.25);
-        }
-      }
-
-      .delete-button {
-        background-color: rgba($expense-color, 0.1);
-        color: $expense-color;
-
-        &:hover {
-          background-color: $expense-color;
-          color: white;
-          transform: translateY(-3px) rotate(-8deg); // Efeito de rotação ao passar o mouse
-          box-shadow: 0 5px 15px rgba($expense-color, 0.25);
-        }
-      }
-    }
-  }
-
-  .no-data {
-    padding: 40px 24px;
-    text-align: center;
+  th.mat-header-cell {
+    background-color: rgba($primary-color, 0.04);
     color: $text-secondary;
-    font-style: italic;
+    font-weight: 600;
     font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
-    background-color: rgba($background-color, 0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    padding: 18px 22px;
+    border-bottom: 2px solid rgba($primary-color, 0.08);
+  }
 
-    &::before {
-      content: 'sentiment_satisfied'; // Ícone mais amigável
-      font-family: 'Material Icons';
-      font-size: 48px;
-      color: rgba($text-secondary, 0.3);
-      margin-bottom: 16px;
+  td.mat-cell {
+    padding: 18px 22px;
+    color: $text-primary;
+    font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
+    border-bottom: 1px solid rgba($border-color, 0.6);
+    font-size: 15px;
+
+    &:first-of-type {
+      font-weight: 500;
     }
   }
 
-  .view-all {
-    text-align: center;
-    padding: 20px;
-    background: linear-gradient(to bottom, rgba($primary-color, 0.02), rgba($primary-color, 0.05));
-    border-top: 1px solid rgba($border-color, 0.7);
-    border-radius: 0 0 24px 24px; // Cantos inferiores arredondados
+  tr.mat-row {
+    transition: all 0.3s;
 
-    a {
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
-      font-weight: 600;
-      color: $primary-color;
-      display: inline-flex;
-      align-items: center;
+    &:hover {
+      background-color: rgba($primary-color, 0.03);
+      transform: scale(1.01); // Efeito sutil de escala ao passar o mouse
+    }
+  }
+
+  .entry-type {
+    padding: 6px 16px;
+    border-radius: 30px; // Bordas bem arredondadas
+    font-size: 13px;
+    font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
+    font-weight: 600;
+    display: inline-block;
+
+    &.revenue-type {
+      background-color: rgba($revenue-color, 0.12);
+      color: $revenue-color;
+    }
+
+    &.expense-type {
+      background-color: rgba($expense-color, 0.12);
+      color: $expense-color;
+    }
+  }
+
+  .revenue {
+    color: $revenue-color;
+    font-weight: 600;
+  }
+
+  .expense {
+    color: $expense-color;
+    font-weight: 600;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+
+    button {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%; // Botões circulares
+      @include flex-center;
       transition: all 0.3s;
 
+      .mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+      }
+    }
+
+    .edit-button {
+      background-color: rgba($primary-color, 0.1);
+      color: $primary-color;
+
       &:hover {
-        transform: scale(1.05);
-        text-decoration: none;
-        color: $primary-dark;
+        background-color: $primary-color;
+        color: white;
+        transform: translateY(-3px) rotate(8deg); // Efeito de rotação ao passar o mouse
+        box-shadow: 0 5px 15px rgba($primary-color, 0.25);
       }
+    }
 
-      &::after {
-        content: '';
-        font-family: 'Material Icons';
-        font-size: 18px;
-        margin-left: 8px;
-        transition: transform 0.3s;
-      }
+    .delete-button {
+      background-color: rgba($expense-color, 0.1);
+      color: $expense-color;
 
-      &:hover::after {
-        transform: translateX(4px);
+      &:hover {
+        background-color: $expense-color;
+        color: white;
+        transform: translateY(-3px) rotate(-8deg); // Efeito de rotação ao passar o mouse
+        box-shadow: 0 5px 15px rgba($expense-color, 0.25);
       }
     }
   }
 }
+
+.no-data {
+  padding: 40px 24px;
+  text-align: center;
+  color: $text-secondary;
+  font-style: italic;
+  font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
+  background-color: rgba($background-color, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &::before {
+    content: 'sentiment_satisfied'; // Ícone mais amigável
+    font-family: 'Material Icons';
+    font-size: 48px;
+    color: rgba($text-secondary, 0.3);
+    margin-bottom: 16px;
+  }
+}
+
+.view-all {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(to bottom, rgba($primary-color, 0.02), rgba($primary-color, 0.05));
+  border-top: 1px solid rgba($border-color, 0.7);
+  border-radius: 0 0 24px 24px; // Cantos inferiores arredondados
+
+  a {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Quicksand', 'Nunito', sans-serif; // Fonte mais arredondada
+    font-weight: 600;
+    color: $primary-color;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s;
+    position: relative;
+    padding: 8px 16px;
+    border-radius: 20px;
+
+    &:hover {
+      transform: scale(1.05);
+      text-decoration: none;
+      color: $primary-dark;
+      background-color: rgba($primary-color, 0.08);
+    }
+
+    &::after {
+      content: 'arrow_forward';
+      font-family: 'Material Icons';
+      font-size: 18px;
+      margin-left: 8px;
+      transition: transform 0.3s;
+    }
+
+    &:hover::after {
+      transform: translateX(4px);
+    }
+  }
+}
+
 
 // Animações suaves
 @keyframes fadeIn {
@@ -541,6 +693,30 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -560,11 +736,28 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
     font-weight: 500;
     letter-spacing: 0.3px;
     font-size: 15px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background-color: transparent;
+      transition: background-color 0.3s ease;
+    }
 
     &.active {
       background-color: rgba($primary-color, 0.12);
       color: $primary-color;
       font-weight: 600;
+
+      &::before {
+        background-color: $primary-color;
+      }
     }
 
     &:hover:not(.active) {
@@ -579,17 +772,28 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
       margin-right: 16px;
       width: 24px;
       height: 24px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
 
       .mat-icon {
         color: $text-secondary;
         font-size: 24px;
         width: 24px;
         height: 24px;
+        transition: all 0.3s ease;
       }
     }
 
-    &.active .icon-container .mat-icon {
-      color: $primary-color;
+    &.active .icon-container {
+      background-color: rgba($primary-color, 0.1);
+
+      .mat-icon {
+        color: $primary-color;
+      }
+    }
+
+    &:hover .icon-container {
+      transform: scale(1.1);
     }
 
     .label-container {
@@ -606,5 +810,193 @@ $shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.08);
   align-items: center !important;
 }
 
+// Efeito de onda para o ripple
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
 
-// Estilo global adicional para o arquivo styles.scss
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+// Estilo para alinhamento responsivo
+@media (max-width: 768px) {
+  .entries-list .mat-card .mat-card-header {
+    flex-direction: column; // Alterado para column em telas muito pequenas
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 20px; // Reduz padding para caber melhor
+
+    .mat-card-title {
+      font-size: 16px; // Reduz tamanho da fonte
+      width: 100%; // Garante que o título ocupe toda a largura
+    }
+
+    .header-actions {
+      width: 100%; // Garante que as ações ocupem toda a largura
+      justify-content: center; // Centraliza o botão
+      margin-top: 8px;
+
+      .new-entry-button {
+        width: 100%; // Ocupa toda a largura disponível
+        justify-content: center;
+      }
+    }
+  }
+
+  // Ajusta o layout para celulares
+  .stats-cards {
+    grid-template-columns: 1fr; // Uma coluna em telas pequenas
+    gap: 16px;
+  }
+
+  .dashboard-toolbar {
+    padding: 0 16px;
+    height: 60px;
+
+    .app-title {
+      font-size: 18px;
+    }
+  }
+
+  .dashboard-content {
+    padding: 16px;
+  }
+
+  // Melhora visualização da tabela em telas pequenas
+  .entries-table {
+
+    th.mat-header-cell,
+    td.mat-cell {
+      padding: 12px 10px;
+      font-size: 13px;
+    }
+
+    .entry-type {
+      padding: 4px 10px;
+      font-size: 11px;
+    }
+
+    .action-buttons button {
+      width: 32px;
+      height: 32px;
+
+      .mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+// Melhoria para desempenho em dispositivos móveis
+@media (hover: none) {
+  .mat-card:hover {
+    transform: none;
+    box-shadow: $shadow-light;
+  }
+
+  tr.mat-row:hover {
+    transform: none;
+  }
+}
+
+// Transições mais suaves
+* {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+
+  .add-button,
+  .new-entry-button {
+    position: relative;
+    min-width: 160px;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 22px !important;
+    border: none !important;
+    background: linear-gradient(135deg, #4db6ac, #00897b) !important;
+    color: white !important;
+    font-family: 'Quicksand', 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    text-transform: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(77, 182, 172, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    /* Garante que a linha de texto tenha altura adequada */
+
+    .mat-icon,
+    .add-icon {
+      margin-right: 8px;
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+      transition: transform 0.3s ease;
+      display: flex !important;
+      /* Garante que o ícone seja flexível */
+      align-items: center !important;
+      /* Centraliza verticalmente */
+      justify-content: center !important;
+      /* Centraliza horizontalmente */
+      line-height: 1 !important;
+      /* Remove espaçamento extra da linha */
+    }
+
+    /* Container para alinhar ícone e texto */
+    span,
+    .mat-button-wrapper {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      height: 100% !important;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(77, 182, 172, 0.4) !important;
+
+      .mat-icon,
+      .add-icon {
+        transform: rotate(90deg);
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(77, 182, 172, 0.3) !important;
+    }
+
+    /* Efeito de brilho */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.7s ease;
+    }
+
+    &:hover::before {
+      left: 100%;
+    }
+  }
+}
