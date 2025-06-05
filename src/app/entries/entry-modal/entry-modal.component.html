@@ -1,77 +1,115 @@
 <!-- src/app/entries/entry-modal/entry-modal.component.html -->
-<h2 mat-dialog-title>{{isEdit ? 'Editar' : 'Novo'}} Lançamento</h2>
+<div class="entry-modal-container">
+    <h2 class="modal-title">{{isEdit ? 'Editar' : 'Novo'}} Lançamento</h2>
 
-<mat-dialog-content>
-    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Carregando dados...</p>
+    </div>
 
-    <form [formGroup]="entryForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="entryForm" *ngIf="!loading" class="entry-form">
         <div class="form-row">
-            <mat-form-field appearance="outline">
-                <mat-label>Data</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="entryDate">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-                <mat-error *ngIf="entryForm.controls['entryDate'].hasError('required')">
-                    Data é obrigatória
-                </mat-error>
-            </mat-form-field>
+            <div class="form-field">
+                <mat-form-field appearance="outline">
+                    <mat-label>Data</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="entryDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="entryForm.get('entryDate')?.hasError('required')">
+                        Data é obrigatória
+                    </mat-error>
+                </mat-form-field>
+            </div>
 
-            <mat-form-field appearance="outline">
-                <mat-label>Tipo</mat-label>
-                <mat-select formControlName="entryType">
-                    <mat-option value="Receita">Receita</mat-option>
-                    <mat-option value="Despesa">Despesa</mat-option>
-                </mat-select>
-                <mat-error *ngIf="entryForm.controls['entryType'].hasError('required')">
-                    Tipo é obrigatório
-                </mat-error>
-            </mat-form-field>
+            <div class="form-field">
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo</mat-label>
+                    <mat-select formControlName="entryType">
+                        <mat-option value="Receita" style="background-color: white;">
+                            <div style="background-color: white; padding: 8px 0;">
+                                <span style="color: #059669; font-weight: 500;">Receita</span>
+                            </div>
+                        </mat-option>
+                        <mat-option value="Despesa" style="background-color: white;">
+                            <div style="background-color: white; padding: 8px 0;">
+                                <span style="color: #dc2626; font-weight: 500;">Despesa</span>
+                            </div>
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="entryForm.get('entryType')?.hasError('required')">
+                        Tipo é obrigatório
+                    </mat-error>
+                </mat-form-field>
+            </div>
         </div>
 
         <div class="form-row">
-            <mat-form-field appearance="outline">
-                <mat-label>Valor</mat-label>
-                <input matInput type="number" formControlName="value" min="0.01" step="0.01">
-                <span matPrefix>R$&nbsp;</span>
-                <mat-error *ngIf="entryForm.controls['value'].hasError('required')">
-                    Valor é obrigatório
-                </mat-error>
-                <mat-error *ngIf="entryForm.controls['value'].hasError('min')">
-                    Valor deve ser maior que zero
-                </mat-error>
-            </mat-form-field>
+            <div class="form-field">
+                <mat-form-field appearance="outline">
+                    <mat-label>  Valor</mat-label>
+                    <input matInput type="number" formControlName="value" min="0.01" step="0.01">
+                    <span matPrefix class="currency-prefix">R$&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <mat-error *ngIf="entryForm.get('value')?.hasError('required')">
+                        Valor é obrigatório
+                    </mat-error>
+                    <mat-error *ngIf="entryForm.get('value')?.hasError('min')">
+                        Valor deve ser maior que zero
+                    </mat-error>
+                </mat-form-field>
+            </div>
 
-            <mat-form-field appearance="outline">
-                <mat-label>Colaborador</mat-label>
-                <mat-select formControlName="fkc">
-                    <mat-option *ngFor="let collaborator of collaborators" [value]="collaborator.collaboratorID">
-                        {{collaborator.name}} - {{collaborator.costCenter?.description}}
-                    </mat-option>
-                </mat-select>
-                <mat-error *ngIf="entryForm.controls['fkc'].hasError('required')">
-                    Colaborador é obrigatório
-                </mat-error>
-            </mat-form-field>
+            <div class="form-field">
+                <mat-form-field appearance="outline">
+                    <mat-label>Colaborador</mat-label>
+                    <mat-select formControlName="fkc">
+                        <mat-option *ngFor="let collaborator of collaborators" [value]="collaborator.collaboratorID"
+                            style="background-color: white;">
+                            <div
+                                style="background-color: white; padding: 8px 0; display: flex; flex-direction: column;">
+                                <span style="font-weight: 500; color: #1e293b;">{{collaborator.name}}</span>
+                                <span style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                                    {{collaborator.costCenter?.description}}
+                                </span>
+                            </div>
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="entryForm.get('fkc')?.hasError('required')">
+                        Colaborador é obrigatório
+                    </mat-error>
+                </mat-form-field>
+            </div>
         </div>
 
         <div class="form-row">
-            <mat-form-field appearance="outline">
-                <mat-label>Banco</mat-label>
-                <mat-select formControlName="fkBank">
-                    <mat-option>Nenhum</mat-option>
-                    <mat-option *ngFor="let bank of banks" [value]="bank.bankID">
-                        {{bank.name}} ({{bank.code}})
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <div class="form-field full-width">
+                <mat-form-field appearance="outline">
+                    <mat-label>Banco</mat-label>
+                    <mat-select formControlName="fkBank">
+                        <mat-option style="background-color: white;">
+                            <div style="background-color: white; padding: 8px 0;">
+                                <span>Nenhum</span>
+                            </div>
+                        </mat-option>
+                        <mat-option *ngFor="let bank of banks" [value]="bank.bankID" style="background-color: white;">
+                            <div style="background-color: white; padding: 8px 0; display: flex; align-items: center;">
+                                <span style="font-weight: 500; color: #1e293b;">{{bank.name}}</span>
+                                <span style="font-size: 12px; color: #64748b; margin-left: 8px;">
+                                    ({{bank.code}})
+                                </span>
+                            </div>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
     </form>
-</mat-dialog-content>
 
-<mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="onCancel()" [disabled]="submitLoading">Cancelar</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="entryForm.invalid || submitLoading">
-        <mat-spinner *ngIf="submitLoading" diameter="20"></mat-spinner>
-        <span *ngIf="!submitLoading">{{isEdit ? 'Atualizar' : 'Salvar'}}</span>
-    </button>
-</mat-dialog-actions>
+    <div class="form-actions">
+        <button mat-button class="cancel-button" (click)="onCancel()">Cancelar</button>
+        <button mat-raised-button class="save-button" [disabled]="entryForm?.invalid || submitLoading"
+            (click)="onSubmit()">
+            <mat-spinner *ngIf="submitLoading" diameter="20" class="save-spinner"></mat-spinner>
+            <span *ngIf="!submitLoading">{{isEdit ? 'Atualizar' : 'Salvar'}}</span>
+        </button>
+    </div>
+</div>
