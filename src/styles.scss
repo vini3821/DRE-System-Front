@@ -513,3 +513,22 @@
     padding: 0 !important;
     margin: 0 !important;
 }
+
+// Adicione os overrides do Angular Material
+.mat-mdc-dialog-container,
+.mat-dialog-container,
+.mdc-dialog,
+.mdc-dialog__container,
+.mdc-dialog__surface {
+    all: unset !important;
+    display: block !important;
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    outline: none !important;
+    max-width: none !important;
+    max-height: none !important;
+}
