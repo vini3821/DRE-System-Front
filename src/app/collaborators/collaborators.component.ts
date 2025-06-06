@@ -14,6 +14,8 @@ import { MatRippleModule } from '@angular/material/core';
 import { CollaboratorService } from '../services/collaborator.service';
 import { Collaborator } from '../models/collaborator.model';
 import { CollaboratorModalComponent } from '../collaborators/collaborator-modal/collaborator-modal.component';
+import { Router } from '@angular/router';
+
 
 @Component({
     selector: 'app-collaborators',
@@ -42,8 +44,13 @@ export class CollaboratorsComponent implements OnInit {
     constructor(
         private collaboratorService: CollaboratorService,
         private snackBar: MatSnackBar,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private router: Router
     ) { }
+
+    goToDashboard() {
+        this.router.navigate(['/dashboard']);
+    }
 
     ngOnInit() {
         this.loading = true;

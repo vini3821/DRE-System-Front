@@ -13,6 +13,9 @@ import { RouterModule } from '@angular/router';
 import { BankService } from '../services/bank.service';
 import { Bank } from '../models/bank.model';
 import { BankModalComponent } from './bank-modal/bank-modal.component';
+import { Router } from '@angular/router';
+
+
 
 @Component({
     selector: 'app-banks',
@@ -33,6 +36,7 @@ import { BankModalComponent } from './bank-modal/bank-modal.component';
     templateUrl: './banks.component.html',
     styleUrls: ['./banks.component.scss']
 })
+
 export class BanksComponent implements OnInit {
     banks: Bank[] = [];
     loading = false;
@@ -41,8 +45,13 @@ export class BanksComponent implements OnInit {
     constructor(
         private bankService: BankService,
         private snackBar: MatSnackBar,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private router: Router
     ) { }
+
+    goToDashboard() {
+        this.router.navigate(['/dashboard']);
+    }
 
     ngOnInit() {
         this.loading = true;

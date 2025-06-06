@@ -1,166 +1,316 @@
 // collaborators.component.scss
-@import '../components/dashboard.component.scss'; // Importe os estilos base
+// Paleta de cores (mantendo consistência com o restante do app)
+$primary-color: #2563eb;
+$primary-light: #3b82f6;
+$primary-dark: #1e40af;
+$accent-color: #059669;
+$accent-light: #10b981;
+$danger-color: #dc2626;
+$danger-light: #ef4444;
+$surface-color: #ffffff;
+$background-color: #f9fafb;
+$border-color: #e2e8f0;
+$text-primary: #1e293b;
+$text-secondary: #64748b;
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
 .collaborators-container {
-    padding: 24px;
+    padding: 32px;
     max-width: 1200px;
     margin: 0 auto;
+    font-family: 'Inter', sans-serif;
 
-    .mat-card {
-        @include card-base;
+    // Cabeçalho com título e botão
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
 
-        .mat-card-header {
-            background: linear-gradient(to right, rgba($primary-color, 0.06), rgba($primary-color, 0.01));
-            padding: 24px 28px;
-            border-bottom: 1px solid rgba($border-color, 0.7);
-            display: flex;
-            align-items: center;
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: $text-primary;
+            margin: 0;
+            position: relative;
 
-            .mat-card-title {
-                margin: 0;
-                font-size: 19px;
-                font-weight: 600;
-                font-family: 'Quicksand', 'Nunito', sans-serif;
-                color: $primary-color;
-                display: flex;
-                align-items: center;
-
-                &::before {
-                    content: '';
-                    display: inline-block;
-                    width: 10px;
-                    height: 10px;
-                    margin-right: 12px;
-                    background-color: $primary-color;
-                    border-radius: 50%;
-                }
-            }
-
-            .header-actions {
-                margin-left: auto;
-
-                button {
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    font-family: 'Quicksand', 'Nunito', sans-serif;
-                    font-weight: 600;
-                    border-radius: 18px;
-                    padding: 0 20px;
-                    height: 42px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                    transition: all 0.3s;
-
-                    &:hover {
-                        transform: translateY(-3px);
-                        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-                    }
-
-                    .mat-icon {
-                        margin-right: 8px;
-                    }
-                }
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                width: 40px;
+                height: 3px;
+                background: linear-gradient(90deg, $accent-color, $primary-color);
+                border-radius: 2px;
             }
         }
 
-        .mat-card-content {
-            padding: 0;
+        .add-button {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, $accent-color, darken($accent-color, 5%));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: $shadow-sm;
+
+            &:hover {
+                background: linear-gradient(135deg, lighten($accent-color, 3%), $accent-color);
+                box-shadow: $shadow-md;
+                transform: translateY(-2px);
+            }
+
+            .icon {
+                margin-right: 8px;
+                font-size: 20px;
+            }
         }
     }
 
+    // Tabela de colaboradores
     .collaborators-table {
         width: 100%;
+        background-color: $surface-color;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: $shadow-sm;
+        border-collapse: separate;
+        border-spacing: 0;
 
-        th.mat-header-cell {
-            background-color: rgba($primary-color, 0.04);
-            color: $text-secondary;
+        th {
+            text-align: left;
+            padding: 16px 20px;
             font-weight: 600;
-            font-family: 'Quicksand', 'Nunito', sans-serif;
+            font-size: 14px;
+            color: $text-secondary;
             text-transform: uppercase;
-            font-size: 13px;
             letter-spacing: 0.5px;
-            padding: 18px 22px;
-            border-bottom: 2px solid rgba($primary-color, 0.08);
-        }
+            background-color: rgba($primary-light, 0.05);
+            border-bottom: 2px solid rgba($primary-light, 0.1);
 
-        td.mat-cell {
-            padding: 18px 22px; // Corrigido de a8px para 18px
-            color: $text-primary;
-            font-family: 'Quicksand', 'Nunito', sans-serif;
-            border-bottom: 1px solid rgba($border-color, 0.6);
-            font-size: 15px;
-        }
+            &:first-child {
+                border-top-left-radius: 12px;
+            }
 
-        tr.mat-row {
-            transition: all 0.3s;
-
-            &:hover {
-                background-color: rgba($primary-color, 0.03);
-                transform: scale(1.01);
+            &:last-child {
+                border-top-right-radius: 12px;
+                text-align: center;
             }
         }
 
+        td {
+            padding: 16px 20px;
+            font-size: 15px;
+            color: $text-primary;
+            border-bottom: 1px solid $border-color;
+
+            &:last-child {
+                text-align: center;
+            }
+        }
+
+        tr {
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: rgba($primary-light, 0.03);
+            }
+
+            &:last-child td {
+                border-bottom: none;
+
+                &:first-child {
+                    border-bottom-left-radius: 12px;
+                }
+
+                &:last-child {
+                    border-bottom-right-radius: 12px;
+                }
+            }
+        }
+
+        // Botões de ação
         .action-buttons {
             display: flex;
             gap: 12px;
+            justify-content: center;
 
             button {
-                width: 38px;
-                height: 38px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
                 border-radius: 50%;
-                @include flex-center;
-                transition: all 0.3s;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s ease;
 
-                .mat-icon {
-                    font-size: 20px;
-                    width: 20px;
-                    height: 20px;
-                    line-height: 20px;
+                .icon {
+                    font-size: 18px;
                 }
-            }
 
-            .edit-button {
-                background-color: rgba($primary-color, 0.1);
-                color: $primary-color;
+                &.edit-button {
+                    background-color: rgba($primary-light, 0.1);
+                    color: $primary-color;
 
-                &:hover {
-                    background-color: $primary-color;
-                    color: white;
-                    transform: translateY(-3px) rotate(8deg);
-                    box-shadow: 0 5px 15px rgba($primary-color, 0.25);
+                    &:hover {
+                        background-color: $primary-color;
+                        color: white;
+                        transform: translateY(-3px);
+                        box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+                    }
                 }
-            }
 
-            .delete-button {
-                background-color: rgba($expense-color, 0.1);
-                color: $expense-color;
+                &.delete-button {
+                    background-color: rgba($danger-color, 0.1);
+                    color: $danger-color;
 
-                &:hover {
-                    background-color: $expense-color;
-                    color: white;
-                    transform: translateY(-3px) rotate(-8deg);
-                    box-shadow: 0 5px 15px rgba($expense-color, 0.25);
+                    &:hover {
+                        background-color: $danger-color;
+                        color: white;
+                        transform: translateY(-3px);
+                        box-shadow: 0 4px 12px rgba($danger-color, 0.3);
+                    }
                 }
             }
         }
     }
 
-    .no-data {
-        padding: 40px 24px;
-        text-align: center;
-        color: $text-secondary;
-        font-style: italic;
-        font-family: 'Quicksand', 'Nunito', sans-serif;
-        background-color: rgba($background-color, 0.5);
+    // Estado vazio
+    .empty-state {
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
+        padding: 60px 0;
+        color: $text-secondary;
 
-        &::before {
-            content: 'sentiment_satisfied';
-            font-family: 'Material Icons';
+        .icon {
             font-size: 48px;
-            color: rgba($text-secondary, 0.3);
             margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        p {
+            font-size: 16px;
+            font-style: italic;
+        }
+    }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+    .collaborators-container {
+        padding: 16px;
+
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        .collaborators-table {
+
+            th,
+            td {
+                padding: 12px 16px;
+            }
+
+            th:nth-child(2),
+            td:nth-child(2) {
+                display: none; // Oculta a coluna do centro de custo em telas pequenas
+            }
+        }
+    }
+}
+
+.header {
+    .header-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .dashboard-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba($text-secondary, 0.1);
+        color: $text-secondary;
+        border: 1px solid rgba($text-secondary, 0.2);
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        align-self: flex-start;
+
+        &:hover {
+            background: $text-secondary;
+            color: white;
+        }
+
+        .icon {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
+}
+
+.action-buttons {
+    display: flex !important;
+    gap: 8px !important;
+
+    .action-btn {
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 6px !important;
+        border: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        outline: none !important;
+
+        svg {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 2 !important;
+        }
+
+        &--edit {
+            background: #dbeafe !important;
+            color: #3b82f6 !important;
+
+            &:hover {
+                background: #3b82f6 !important;
+                color: white !important;
+            }
+        }
+
+        &--delete {
+            background: #fee2e2 !important;
+            color: #ef4444 !important;
+
+            &:hover {
+                background: #ef4444 !important;
+                color: white !important;
+            }
         }
     }
 }
