@@ -9,7 +9,7 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { SectorService, Sector } from '../services/sector.service';
 import { SectorModalComponent } from './sector-modal/sector-modal.component';
 
@@ -27,7 +27,8 @@ import { SectorModalComponent } from './sector-modal/sector-modal.component';
         MatDialogModule,
         MatTooltipModule,
         MatRippleModule,
-        RouterModule
+        RouterModule,
+
     ],
     templateUrl: './sectors.component.html',
     styleUrls: ['./sectors.component.scss']
@@ -40,8 +41,13 @@ export class SectorsComponent implements OnInit {
     constructor(
         private sectorService: SectorService,
         private snackBar: MatSnackBar,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private router: Router
     ) { }
+
+    goToDashboard() {
+        this.router.navigate(['/dashboard']);
+    }
 
     ngOnInit() {
         this.loading = true;
