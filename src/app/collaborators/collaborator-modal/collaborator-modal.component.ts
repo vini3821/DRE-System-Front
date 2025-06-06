@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,67 +27,25 @@ import { catchError, finalize, of } from 'rxjs';
     MatProgressSpinnerModule,
     MatSnackBarModule
   ],
-  template: `
-    <h2>{{isEdit ? 'Editar' : 'Novo'}} Colaborador</h2>
-    
-    <div *ngIf="loading" style="text-align: center; padding: 20px;">
-      <mat-spinner diameter="40" style="margin: 0 auto;"></mat-spinner>
-      <p>Carregando dados...</p>
-    </div>
-    
-    <form [formGroup]="form" *ngIf="!loading">
-      <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;">
-        <mat-label>Nome</mat-label>
-        <input matInput formControlName="name">
-        <mat-error *ngIf="form.get('name')?.hasError('required')">Nome é obrigatório</mat-error>
-      </mat-form-field>
-      
-      <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;">
-        <mat-label>Centro de Custo</mat-label>
-        <mat-select formControlName="fkcc">
-          <mat-option *ngFor="let cc of costCenters" [value]="cc.costCenterID">
-            {{cc.description}}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.get('fkcc')?.hasError('required')">
-          Centro de Custo é obrigatório
-        </mat-error>
-      </mat-form-field>
-    </form>
-    
-    <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
-      <button mat-button (click)="cancel()">Cancelar</button>
-      <button mat-raised-button color="primary" 
-              [disabled]="form.invalid || saving" 
-              (click)="save()">
-        <span *ngIf="!saving">{{isEdit ? 'Atualizar' : 'Salvar'}}</span>
-        <span *ngIf="saving">Salvando...</span>
-      </button>
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-      padding: 20px;
-    }
-    
-    h2 {
-      margin-top: 0;
-      margin-bottom: 24px;
-      color: #5b6bbf;
-    }
-    
-    button[mat-raised-button] {
-      margin-left: 8px;
-    }
-  `]
+  templateUrl: './collaborator-modal.component.html',
+  styleUrls: ['./collaborator-modal.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class CollaboratorModalComponent implements OnInit {
-  form: FormGroup;
+  collaboratorForm: FormGroup;
   costCenters: CostCenter[] = [];
   isEdit = false;
   loading = true;
   saving = false;
+
+  // Getters para controles de formulário tipados
+  get nameControl(): FormControl {
+    return this.collaboratorForm.get('name') as FormControl;
+  }
+
+  get centerControl(): FormControl {
+    return this.collaboratorForm.get('fkcc') as FormControl;
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -98,22 +56,50 @@ export class CollaboratorModalComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.form = this.fb.group({
+    this.collaboratorForm = this.fb.group({
       name: ['', Validators.required],
       fkcc: [null, Validators.required]
     });
   }
 
   ngOnInit(): void {
-    console.log('Componente inicializado');
+    // Definir tamanho do modal menor
+    if (this.dialogRef) {
+      this.dialogRef.updateSize('420px', 'auto'); // Reduzido de 450px
+      this.dialogRef.addPanelClass('collaborator-modal-dialog');
 
-    // Verifica o modo de edição
+      // Configuração extra para remover as barras de rolagem
+      setTimeout(() => {
+        // Remover barras de rolagem de maneira direta
+        document.querySelectorAll('.mat-dialog-container, .cdk-overlay-pane, body').forEach(el => {
+          if (el instanceof HTMLElement) {
+            el.style.overflow = 'hidden';
+            // Remova a linha com msOverflowStyle pois não é válida em TypeScript
+            // Podemos usar um atributo data personalizado como alternativa
+            el.setAttribute('data-no-scroll', 'true');
+          }
+        });
+
+        // Verificar se há barras de rolagem e ajustar altura se necessário
+        const modalContent = document.querySelector('.modal-container') as HTMLElement;
+        if (modalContent) {
+          const viewportHeight = window.innerHeight;
+          const modalHeight = modalContent.offsetHeight;
+
+          // Se o modal for maior que o viewport, ajustar altura
+          if (modalHeight > viewportHeight - 40) {
+            this.dialogRef.updateSize('420px', `${viewportHeight - 40}px`);
+          }
+        }
+      }, 10);
+    }
+
+    // Resto do código permanece igual
+    console.log('Componente inicializado');
     this.isEdit = !!(this.data && this.data.collaborator);
     console.log('Modo de edição:', this.isEdit);
-
     this.loadCostCenters();
   }
-
   loadCostCenters(): void {
     console.log('Carregando centros de custo');
 
@@ -137,12 +123,12 @@ export class CollaboratorModalComponent implements OnInit {
         if (this.isEdit && this.data.collaborator) {
           const collaborator = this.data.collaborator;
 
-          this.form.patchValue({
+          this.collaboratorForm.patchValue({
             name: collaborator.name || '',
             fkcc: collaborator.fkcc
           });
 
-          console.log('Formulário preenchido com:', this.form.value);
+          console.log('Formulário preenchido com:', this.collaboratorForm.value);
         }
 
         this.loading = false;
@@ -150,10 +136,10 @@ export class CollaboratorModalComponent implements OnInit {
       });
   }
 
-  save(): void {
-    if (this.form.invalid) {
-      console.log('Formulário inválido:', this.form.value, this.form.errors);
-      this.form.markAllAsTouched();
+  onSubmit(): void {
+    if (this.collaboratorForm.invalid) {
+      console.log('Formulário inválido:', this.collaboratorForm.value, this.collaboratorForm.errors);
+      this.collaboratorForm.markAllAsTouched();
       this.snackBar.open('Por favor, corrija os erros no formulário.', 'OK', { duration: 3000 });
       return;
     }
@@ -161,8 +147,8 @@ export class CollaboratorModalComponent implements OnInit {
     this.saving = true;
 
     const collaborator: Collaborator = {
-      name: this.form.value.name,
-      fkcc: this.form.value.fkcc,
+      name: this.collaboratorForm.value.name,
+      fkcc: this.collaboratorForm.value.fkcc,
       collaboratorID: this.isEdit && this.data.collaborator ? this.data.collaborator.collaboratorID : 0
     };
 
@@ -176,7 +162,10 @@ export class CollaboratorModalComponent implements OnInit {
       .pipe(
         catchError(error => {
           console.error('Erro ao salvar:', error);
-          this.snackBar.open('Erro ao salvar colaborador', 'OK', { duration: 3000 });
+          this.snackBar.open('Erro ao salvar colaborador', 'Fechar', {
+            duration: 5000,
+            panelClass: ['error-snackbar'] // Classe para estilizar mensagens de erro
+          });
           return of(null);
         }),
         finalize(() => {
@@ -186,13 +175,23 @@ export class CollaboratorModalComponent implements OnInit {
       )
       .subscribe(result => {
         if (result) {
-          this.snackBar.open('Colaborador salvo com sucesso!', 'OK', { duration: 3000 });
+          // Mensagem de sucesso estilizada
+          this.snackBar.open(
+            'Colaborador ' + (this.isEdit ? 'atualizado' : 'criado') + ' com sucesso!',
+            'Fechar',
+            {
+              duration: 5000,
+              panelClass: ['success-snackbar'], // Classe para estilizar mensagens de sucesso
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            }
+          );
           this.dialogRef.close(result);
         }
       });
   }
 
-  cancel(): void {
+  onCancel(): void {
     this.dialogRef.close();
   }
 }

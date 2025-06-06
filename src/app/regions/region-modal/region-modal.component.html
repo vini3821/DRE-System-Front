@@ -1,0 +1,145 @@
+<div class="modal-container">
+    <!-- Header Moderno -->
+    <div class="modal-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="header-text">
+                <h2>{{isEdit ? 'Editar' : 'Nova'}} Região</h2>
+                <p>{{isEdit ? 'Atualize as informações da região' : 'Preencha os dados para criar uma nova região'}}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+        <div class="loading-spinner">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-dasharray="32" stroke-dashoffset="32">
+                    <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32"
+                        repeatCount="indefinite" />
+                    <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32"
+                        repeatCount="indefinite" />
+                </path>
+            </svg>
+        </div>
+        <p>Carregando dados...</p>
+    </div>
+
+    <!-- Formulário Moderno -->
+    <form [formGroup]="form" class="modal-content" *ngIf="!loading">
+        <!-- Campo Nome -->
+        <div class="form-field">
+            <label for="name" class="field-label">
+                Nome
+                <span class="required-indicator">*</span>
+            </label>
+            <div class="input-wrapper">
+                <div class="input-container">
+                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <input id="name" type="text" formControlName="name" placeholder="Digite o nome da região"
+                        class="modern-input" autocomplete="off">
+                </div>
+                <div class="error-message" *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
+                    <svg class="error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                        <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                    </svg>
+                    Nome é obrigatório
+                </div>
+            </div>
+        </div>
+
+        <!-- Campo Código -->
+        <div class="form-field">
+            <label for="code" class="field-label">
+                Código
+                <span class="required-indicator">*</span>
+            </label>
+            <div class="input-wrapper">
+                <div class="input-container">
+                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <input id="code" type="text" formControlName="code" placeholder="Digite o código da região"
+                        class="modern-input" autocomplete="off">
+                </div>
+                <div class="error-message" *ngIf="form.get('code')?.hasError('required') && form.get('code')?.touched">
+                    <svg class="error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                        <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                    </svg>
+                    Código é obrigatório
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Botões Modernos -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn--secondary" (click)="onCancel()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            <span>Cancelar</span>
+        </button>
+        <button type="button" class="btn btn--primary" [disabled]="form.invalid || saving" (click)="save()">
+            <div class="btn-content">
+                <svg *ngIf="saving" class="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-dasharray="32" stroke-dashoffset="32">
+                        <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32"
+                            repeatCount="indefinite" />
+                        <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32"
+                            repeatCount="indefinite" />
+                    </path>
+                </svg>
+                <svg *ngIf="!saving" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <polyline points="17,21 17,13 7,13 7,21" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <polyline points="7,3 7,8 15,8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span>{{saving ? 'Salvando...' : (isEdit ? 'Atualizar' : 'Salvar')}}</span>
+            </div>
+        </button>
+    </div>
+</div>

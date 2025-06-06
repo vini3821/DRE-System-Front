@@ -36,7 +36,7 @@ $border-color: #ebedf7;
     .mat-mdc-text-field-wrapper {
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
       border: 2px solid transparent;
-      border-radius: 20px;
+      border-radius: 8px; // Modificado de 20px para 8px
       backdrop-filter: blur(20px);
       box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.1),
@@ -165,7 +165,7 @@ $border-color: #ebedf7;
       margin-top: 8px;
       padding: 8px 12px;
       background: rgba($expense-color, 0.1);
-      border-radius: 12px;
+      border-radius: 12px; // Modificado de 12px para 8px
       border: 1px solid rgba($expense-color, 0.2);
       backdrop-filter: blur(10px);
       animation: errorSlide 0.3s ease forwards;
@@ -179,11 +179,12 @@ $border-color: #ebedf7;
       border-radius: 0;
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
       position: relative;
-      
+
       // Forma hexagonal usando clip-path
       clip-path: polygon(20px 0%, calc(100% - 20px) 0%, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0% calc(100% - 20px), 0% 20px);
-      
-      &:hover, &:focus-within {
+
+      &:hover,
+      &:focus-within {
         clip-path: polygon(18px 0%, calc(100% - 18px) 0%, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0% calc(100% - 18px), 0% 18px);
       }
     }
@@ -196,7 +197,7 @@ $border-color: #ebedf7;
     .mat-mdc-text-field-wrapper {
       border-radius: 50px;
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
-      
+
       &::after {
         content: '';
         position: absolute;
@@ -219,14 +220,15 @@ $border-color: #ebedf7;
       background: #f0f2f5;
       border: none;
       border-radius: 25px;
-      box-shadow: 
+      box-shadow:
         20px 20px 40px rgba(0, 0, 0, 0.1),
         -20px -20px 40px rgba(255, 255, 255, 0.8),
         inset 0 0 0 rgba(0, 0, 0, 0);
       transition: all 0.3s ease;
-      
-      &:hover, &:focus-within {
-        box-shadow: 
+
+      &:hover,
+      &:focus-within {
+        box-shadow:
           inset 10px 10px 20px rgba(0, 0, 0, 0.1),
           inset -10px -10px 20px rgba(255, 255, 255, 0.8);
       }
@@ -235,19 +237,20 @@ $border-color: #ebedf7;
 }
 
 // Aplicação dos estilos
-.login-form, .register-form {
+.login-form,
+.register-form {
   @include custom-input-field;
-  
+
   // Campo de email com estilo circular
   .email-field {
     @include circular-input;
   }
-  
+
   // Campo de senha com estilo hexagonal
   .password-field {
     @include hexagonal-input;
   }
-  
+
   // Campo de nome com estilo neumorfo
   .name-field {
     @include neumorphic-input;
@@ -260,6 +263,7 @@ $border-color: #ebedf7;
     opacity: 0;
     transform: translateY(-10px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -270,6 +274,7 @@ $border-color: #ebedf7;
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -277,12 +282,14 @@ $border-color: #ebedf7;
 
 // Responsividade
 @media (max-width: 480px) {
-  .login-form, .register-form {
+
+  .login-form,
+  .register-form {
     .mat-mdc-form-field {
       .mat-mdc-form-field-flex {
         padding: 14px 16px;
       }
-      
+
       .mat-mdc-form-field-infix input {
         font-size: 15px;
       }
@@ -540,7 +547,7 @@ $border-color: #ebedf7;
 
         .mat-mdc-text-field-wrapper {
           background: #f8f9fa;
-          border-radius: 12px;
+          border-radius: 16px; // Modificado de 12px para 8px
           border: 1px solid #e9ecef;
           transition: all 0.3s ease;
 
@@ -638,7 +645,7 @@ $border-color: #ebedf7;
 
         .login-button {
           height: 48px;
-          border-radius: 12px;
+          border-radius: 16px; // Modificado de 12px para 8px
           font-size: 15px;
           font-weight: 600;
           text-transform: none;
@@ -745,6 +752,53 @@ $border-color: #ebedf7;
   }
 }
 
+// Override específico para garantir bordas arredondadas nos campos de login
+::ng-deep .login-form .mat-mdc-form-field.mat-mdc-form-field-appearance-outline {
+
+  // Container principal
+  .mat-mdc-text-field-wrapper {
+    border-radius: 8px !important;
+    border: 1px solid #d1d5db !important; // Borda sólida única
+    overflow: hidden;
+
+    &:hover {
+      border-color: #8d97d8 !important;
+    }
+  }
+
+  // Estado focado
+  &.mat-focused .mat-mdc-text-field-wrapper {
+    border-color: #5b6bbf !important;
+    border-width: 2px !important;
+    box-shadow: 0 0 0 1px rgba(91, 107, 191, 0.2) !important;
+  }
+
+  // Remover completamente o outline padrão do Material
+  .mdc-notched-outline {
+    display: none !important; // Esconde completamente o outline original
+  }
+
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    display: none !important; // Garante que não apareça
+  }
+
+  // Ajustar o label para não depender do notched outline
+  .mat-mdc-floating-label {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: 16px !important;
+
+    &.mdc-floating-label--float-above {
+      top: -8px !important;
+      left: 12px !important;
+      background: white !important;
+      padding: 0 4px !important;
+      transform: translateY(0) scale(0.75) !important;
+    }
+  }
+}
 
 // Animações
 @keyframes float {

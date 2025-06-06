@@ -16,12 +16,15 @@ import { RegionModalComponent } from './regions/region-modal/region-modal.compon
 import { SectorModalComponent } from './sectors/sector-modal/sector-modal.component';
 import { combineLatest } from 'rxjs';
 import { BankModalComponent } from './banks/bank-modal/bank-modal.component';
+import { RegisterComponent } from './components/register.component';
+
 
 
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
+    { path: 'register', component: RegisterComponent },
     { path: 'dashboard', component: DashboardComponent },
     { path: 'entries', component: EntriesComponent },
     { path: 'entries/new', component: EntryFormComponent },
