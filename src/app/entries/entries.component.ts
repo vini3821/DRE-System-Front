@@ -8,7 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { EntriesService } from '../services/entries.service';
 import { Entry } from '../models/entry.model';
 import { EntryModalComponent } from './entry-modal/entry-modal.component';
@@ -39,8 +39,13 @@ export class EntriesComponent implements OnInit {
     constructor(
         private entriesService: EntriesService,
         private snackBar: MatSnackBar,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private router: Router
     ) { }
+
+    goToDashboard() {
+        this.router.navigate(['/dashboard']);
+    }
 
     ngOnInit() {
         this.loading = true;
